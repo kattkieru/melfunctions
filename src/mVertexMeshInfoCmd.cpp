@@ -534,9 +534,9 @@ MStatus mVertexMeshInfo::doVertexPosition(MFnMesh &meshFn)
 	// get points in the correct space
 	MPointArray vertPos;
 	if (mSpace == MVMI_CMD_SPACE_WORLD)
-		status = meshFn.getPoints(vertPos, MSpace::kWorld);
-	else
-		status = meshFn.getPoints(vertPos, MSpace::kObject);
+		space = MSpace::kWorld;
+        
+	status = meshFn.getPoints(vertPos, space);
 	
 	MDoubleArray result;
 	MPoint point;	
@@ -577,12 +577,14 @@ MStatus mVertexMeshInfo::doVertexNormal(MFnMesh &meshFn)
 	
 	int numVert = meshFn.numVertices();
 	
+	MSpace::Space space = MSpace::kObject;
+	if (mSpace == MVMI_CMD_SPACE_WORLD)
+		space = MSpace::kWorld;
+               
 	// get points in the correct space
 	MPointArray vertPos;
-	if (mSpace == MVMI_CMD_SPACE_WORLD)
-		status = meshFn.getPoints(vertPos, MSpace::kWorld);
-	else
-		status = meshFn.getPoints(vertPos, MSpace::kObject);
+
+	status = meshFn.getPoints(vertPos, space);
 	
 	MDoubleArray result;
 	MVector normal;	
@@ -591,58 +593,29 @@ MStatus mVertexMeshInfo::doVertexNormal(MFnMesh &meshFn)
 	{
 		result = MDoubleArray(ELEMENTS_VEC*mVertIdNum);
 		
-		if (mSpace == MVMI_CMD_SPACE_WORLD)
+		for (int i=0;i<mVertIdNum;i++)
 		{
-			for (int i=0;i<mVertIdNum;i++)
-			{
-				int id = i*ELEMENTS_VEC;
-				meshFn.getVertexNormal(((int)mVertId[i]),normal,MSpace::kWorld);
+			int id = i*ELEMENTS_VEC;
+			meshFn.getVertexNormal(((int)mVertId[i]),normal,space);
 			
-				result[id]   = normal.x;
-				result[id+1] = normal.y;
-				result[id+2] = normal.z;						
-			}
-		}
-		else
-		{
-			for (int i=0;i<mVertIdNum;i++)
-			{
-				int id = i*ELEMENTS_VEC;
-				meshFn.getVertexNormal(((int)mVertId[i]),normal,MSpace::kObject);
-			
-				result[id]   = normal.x;
-				result[id+1] = normal.y;
-				result[id+2] = normal.z;
-			}
+			result[id]   = normal.x;
+			result[id+1] = normal.y;
+			result[id+2] = normal.z;						
 		}
 
 	}
 	else // get all normals
 	{
 		result = MDoubleArray(ELEMENTS_VEC*vertPos.length());
-		if (mSpace == MVMI_CMD_SPACE_WORLD)
+
+		for (int i=0;i<numVert;i++)
 		{
-			for (int i=0;i<numVert;i++)
-			{
-				int id = i*ELEMENTS_VEC;
-				meshFn.getVertexNormal(i,normal,MSpace::kWorld);
+			int id = i*ELEMENTS_VEC;
+			meshFn.getVertexNormal(i,normal,space);
 			
-				result[id]   = normal.x;
-				result[id+1] = normal.y;
-				result[id+2] = normal.z;						
-			}
-		}
-		else
-		{
-			for (int i=0;i<numVert;i++)
-			{
-				int id = i*ELEMENTS_VEC;
-				meshFn.getVertexNormal(i,normal,MSpace::kObject);
-			
-				result[id]   = normal.x;
-				result[id+1] = normal.y;
-				result[id+2] = normal.z;
-			}
+			result[id]   = normal.x;
+			result[id+1] = normal.y;
+			result[id+2] = normal.z;						
 		}
 	}
 	
@@ -660,11 +633,14 @@ MStatus mVertexMeshInfo::doVertexTangent(MFnMesh &meshFn)
 	int numVert = meshFn.numVertices();
 	
 	// get tangents in the correct space
-	MFloatVectorArray tangents;
+    
+	MSpace::Space space = MSpace::kObject;
 	if (mSpace == MVMI_CMD_SPACE_WORLD)
-		status = meshFn.getTangents(tangents, MSpace::kWorld,&mUVSet);
-	else
-		status = meshFn.getTangents(tangents, MSpace::kObject,&mUVSet);
+		space = MSpace::kWorld;
+
+    
+	MFloatVectorArray tangents;
+	status = meshFn.getTangents(tangents, space,&mUVSet);
 	
     USER_ERROR_CHECK(status,"mVertexMeshInfo: error getting tangents, has the specified mesh a valid uv set?");
 		
@@ -711,10 +687,12 @@ MStatus mVertexMeshInfo::doVertexBinormal(MFnMesh &meshFn)
 	
 	// get binormals in the correct space
 	MFloatVectorArray binormals;
+    
+	MSpace::Space space = MSpace::kObject;
 	if (mSpace == MVMI_CMD_SPACE_WORLD)
-		status = meshFn.getBinormals(binormals, MSpace::kWorld,&mUVSet);
-	else
-		status = meshFn.getBinormals(binormals, MSpace::kObject,&mUVSet);
+		space = MSpace::kWorld;
+
+	status = meshFn.getBinormals(binormals, space,&mUVSet);
 
     USER_ERROR_CHECK(status,"mVertexMeshInfo: error getting binormals, has the specified mesh a valid uv set?");
     	

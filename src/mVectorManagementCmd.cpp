@@ -21,7 +21,7 @@
 
 
 #include "../include/mHelperFunctions.h"
-#include "../include/mVectorCmd.h"
+#include "../include/mVectorManagementCmd.h"
 
 namespace melfunctions
 {

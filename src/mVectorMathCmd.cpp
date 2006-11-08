@@ -19,6 +19,7 @@
 #include <maya/MVector.h>
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
+#include <maya/MTransformationMatrix.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MVectorArray.h>
 #include <maya/MArgList.h>
@@ -26,12 +27,10 @@
 
 
 #include "../include/mHelperFunctions.h"
-#include "../include/mVectorCmd.h"
+#include "../include/mVectorMathCmd.h"
 
 namespace melfunctions
 {
-
-
 
 /*
    Function: mVecAdd
@@ -423,6 +422,86 @@ MStatus mVecNegate::doIt( const MArgList& args )
 	}
 
 	setResult(result);
+	return MS::kSuccess;
+}
+
+/*
+   Function: mVecDegToRad
+
+   Convert vector components from degrees to radians
+
+   Parameters:
+
+		$vecArrayA - the vector array
+
+   Returns:
+
+      $vecArrayA , the converted vectors in an array as a float[]
+
+*/
+#define mel mVecDegToRad(float[] $vecArrayA);
+#undef mel
+
+CREATOR(mVecDegToRad)
+MStatus mVecDegToRad::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA;
+    unsigned int count;
+	MStatus stat = getArgVec(args, dblA, count);
+	ERROR_FAIL(stat);
+    
+	// do the actual job 
+    const double mult = M_PI / 180.0;
+    
+	// do the actual job
+
+	for (unsigned int i=0;i<dblA.length();i++)
+	{
+        dblA[i] *= mult;
+	}
+
+	setResult(dblA);
+	return MS::kSuccess;
+}
+
+/*
+   Function: mVecRadToDeg
+
+   Convert vector components from radians to degrees
+
+   Parameters:
+
+		$vecArrayA - the vector array
+
+   Returns:
+
+      $vecArrayA , the converted vectors in an array as a float[]
+
+*/
+#define mel mVecRadToDeg(float[] $vecArrayA);
+#undef mel
+
+CREATOR(mVecRadToDeg)
+MStatus mVecRadToDeg::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA;
+    unsigned int count;
+	MStatus stat = getArgVec(args, dblA, count);
+	ERROR_FAIL(stat);
+    
+	// do the actual job 
+    const double mult =  180.0 / M_PI ;
+    
+	// do the actual job
+
+	for (unsigned int i=0;i<dblA.length();i++)
+	{
+        dblA[i] *= mult;
+	}
+
+	setResult(dblA);
 	return MS::kSuccess;
 }
 
@@ -1164,5 +1243,169 @@ MStatus mVecSlerp::doIt( const MArgList& args )
 	return MS::kSuccess;
 }
 
+
+/*
+   Function: mVecAimUpToEuler
+
+   convert an aim and an up vector to an euler rotation, z is the reference vector for aim and y for up, rotation order for result is xyz
+
+   Parameters:
+
+		$vecArrayA - the aim vector array
+		$vecArrayB - the up vector array
+	
+   Returns:
+
+      the euler roation vector as a float array
+
+*/
+
+// 	$rotOrder - optional, the rotation order (0=XYZ (default),1=YZX,2=ZXY,3=XZY,4=YXZ,5=ZYX)
+
+#define mel mVecAimUpToEuler(float[] $vecArrayA, float[] $vecArrayB);
+#undef mel
+
+CREATOR(mVecAimUpToEuler)
+MStatus mVecAimUpToEuler::doIt( const MArgList& args )
+{
+	#define EPSILON				0.001
+/*	#define ROTATE_ORDER_XYZ	0
+	#define ROTATE_ORDER_YZX	1
+	#define ROTATE_ORDER_ZXY	2
+	#define ROTATE_ORDER_XZY	3
+	#define ROTATE_ORDER_YXZ	4
+	#define ROTATE_ORDER_ZYX	5
+*/    
+	MStatus stat;
+    // get the arguments
+    MDoubleArray dblAim, dblUp, dblRotOrder;
+    unsigned int incAim, incUp, incRotOrder, count;
+    
+	// rot order defined        
+/*   	if (args.length() == 3)
+    {
+		stat = getArgVecVecDbl(args, dblAim, dblUp, dblRotOrder, incAim, incUp, incRotOrder, count);
+		ERROR_FAIL(stat);
+        
+        // verify the rot order is in the proper domain
+		for(int i=0;i<dblRotOrder.length();i++)
+        {
+        	double r = (int)dblRotOrder[i];
+            if ((r < ROTATE_ORDER_XYZ)||(r > ROTATE_ORDER_ZYX))
+            {
+				MString err="rotationOrder error at index ";
+				err = err + i +", not in valid range [0-5]!";
+				USER_ERROR_CHECK(MS::kFailure,err);
+            }
+            else
+	            dblRotOrder[i] =r;
+        }
+    }
+    else
+    {
+    	// no rot order defined, assume its xyz
+    	incRotOrder = 0;
+        dblRotOrder = MDoubleArray(1,ROTATE_ORDER_XYZ);
+*/        
+        stat = getArgVecVec(args, dblAim, dblUp, incAim, incUp, count);
+		ERROR_FAIL(stat);
+//    }
+    
+	
+     
+	// do the actual job
+	unsigned int iterAim, iterUp,iterRotOrder;
+	iterAim = iterUp = iterRotOrder = 0;
+
+	MVector vecAim,vecUp,euler;
+	int rotOrder;
+	MDoubleArray result = createEmptyVecArray(count);
+    
+	MTransformationMatrix::RotationOrder ro = MTransformationMatrix::kXYZ;
+                
+
+	for (unsigned int i=0;i<count;i++)
+	{
+		// get current values
+		getVecFromArray(dblAim,iterAim,vecAim);
+		getVecFromArray(dblUp,iterUp,vecUp);
+        //rotOrder = (int)dblRotOrder[iterRotOrder];
+        
+		// compute the euler rotation
+		//
+        
+        // make sure that the up and aim vectors are orthogonal
+		if ( fabs( vecUp * vecAim ) > EPSILON ) 
+        {
+			// Non-zero dot product
+			MVector orthoVec = vecUp ^ vecAim;
+			MVector newVecAim = orthoVec ^ vecUp;
+			if ( vecAim * newVecAim < 0.0 ) 
+            {
+				// Reverse the vector
+				newVecAim *= -1.0;
+			}
+            
+			vecAim = newVecAim;
+		}
+
+		// Calculate the rotation required to align the y-axis with the up vector
+		MTransformationMatrix firstRot;
+		MVector rotAxis = MVector::yAxis ^ vecUp;
+		rotAxis.normalize();
+		firstRot.setToRotationAxis( rotAxis, MVector::yAxis.angle( vecUp ) );
+		
+		// Calculate the second rotation required to align the forward vector
+		MTransformationMatrix secondRot;
+		MVector transformedAim = firstRot.asMatrix() * vecAim;
+		transformedAim.normalize();
+		double angle = transformedAim.angle( MVector::zAxis );
+		
+        if ( transformedAim.x < 0.0 ) 
+        {
+			// Compensate for the fact that the angle method returns the absolute value
+			angle *= -1.0;
+		}
+		secondRot.setToRotationAxis( vecUp, angle );
+
+		// Get the requested rotation order
+//		MTransformationMatrix::RotationOrder ro;
+/*        
+		switch ( rotOrder ) 
+        {
+			case ROTATE_ORDER_XYZ:	ro = MTransformationMatrix::kXYZ; break;
+			case ROTATE_ORDER_YZX:	ro = MTransformationMatrix::kYZX; break;
+			case ROTATE_ORDER_ZXY:	ro = MTransformationMatrix::kZXY; break;
+			case ROTATE_ORDER_XZY:	ro = MTransformationMatrix::kXZY; break;
+			case ROTATE_ORDER_YXZ:	ro = MTransformationMatrix::kYXZ; break;
+			case ROTATE_ORDER_ZYX:	ro = MTransformationMatrix::kZYX; break;
+			default:				ro = MTransformationMatrix::kInvalid; break;
+		}
+*/
+		MTransformationMatrix rotMat = firstRot.asMatrix() * secondRot.asMatrix();
+//		rotMat.reorderRotation( ro );
+
+		double rotation[3];
+		rotMat.getRotation(rotation, ro);
+        
+        euler = MVector(rotation[0],rotation[1],rotation[2]);
+        
+		// set the result
+        setVecToArray(result,i,euler);
+	
+    	// increase iterators    
+		iterAim += incAim;
+		iterUp += incUp;
+		iterRotOrder += incRotOrder;
+	}
+
+	setResult(result);
+	return MS::kSuccess;
+}
+
+
+    
+    
+    
 
 } // end namespace

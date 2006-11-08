@@ -32,12 +32,20 @@ MStatus initializePlugin( MObject obj )
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");
 	MGlobal::displayInfo("-----------------------------------------------------------------------");
     
-	// matrix
+	// matrix management
     REGISTER_COMMAND(melfunctions,mMatCreate)
     REGISTER_COMMAND(melfunctions,mMatSize)
     REGISTER_COMMAND(melfunctions,mMatAppend)
     REGISTER_COMMAND(melfunctions,mMatGet)
     REGISTER_COMMAND(melfunctions,mMatSet)
+	REGISTER_COMMAND(melfunctions,mMatGetComponent)
+	REGISTER_COMMAND(melfunctions,mMatSetComponent)
+//	REGISTER_COMMAND(mMatGetRow)
+//	REGISTER_COMMAND(mMatSetRow)
+//	REGISTER_COMMAND(mMatGetColumn)
+//	REGISTER_COMMAND(mMatSetColumn)
+
+	// matrix math
 	REGISTER_COMMAND(melfunctions,mMatAdd)
 	REGISTER_COMMAND(melfunctions,mMatSub)
 	REGISTER_COMMAND(melfunctions,mMatMult)
@@ -52,14 +60,8 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mMatAdjoint)
 	REGISTER_COMMAND(melfunctions,mMatDet4x4)
 	REGISTER_COMMAND(melfunctions,mMatDet3x3)
-	REGISTER_COMMAND(melfunctions,mMatGetComponent)
-	REGISTER_COMMAND(melfunctions,mMatSetComponent)
 
-/*	REGISTER_COMMAND(mMatGetRow)
-	REGISTER_COMMAND(mMatSetRow)
-	REGISTER_COMMAND(mMatGetColumn)
-	REGISTER_COMMAND(mMatSetColumn)
-	REGISTER_COMMAND(mMatGetTranslation)
+/*	REGISTER_COMMAND(mMatGetTranslation)
 	REGISTER_COMMAND(mMatSetTranslation)
 	REGISTER_COMMAND(mMatAddTranslation)
 	REGISTER_COMMAND(mMatGetRotation)
@@ -73,18 +75,29 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(mMatAddShear)
 */
 
-	// vector
+	// vector management
     REGISTER_COMMAND(melfunctions,mVecCreate)
     REGISTER_COMMAND(melfunctions,mVecSize)
     REGISTER_COMMAND(melfunctions,mVecAppend)
     REGISTER_COMMAND(melfunctions,mVecGet)
     REGISTER_COMMAND(melfunctions,mVecSet)
-    
+	REGISTER_COMMAND(melfunctions,mVecGetX)
+	REGISTER_COMMAND(melfunctions,mVecGetY)
+	REGISTER_COMMAND(melfunctions,mVecGetZ)
+	REGISTER_COMMAND(melfunctions,mVecGetComponent)
+	REGISTER_COMMAND(melfunctions,mVecSetX)
+	REGISTER_COMMAND(melfunctions,mVecSetY)
+	REGISTER_COMMAND(melfunctions,mVecSetZ)
+	REGISTER_COMMAND(melfunctions,mVecSetComponent)
+
+	// vector math    
 	REGISTER_COMMAND(melfunctions,mVecAdd)
 	REGISTER_COMMAND(melfunctions,mVecSub)
 	REGISTER_COMMAND(melfunctions,mVecDblMult)
 	REGISTER_COMMAND(melfunctions,mVecDblDiv)
 	REGISTER_COMMAND(melfunctions,mVecNegate)    
+	REGISTER_COMMAND(melfunctions,mVecDegToRad)    
+	REGISTER_COMMAND(melfunctions,mVecRadToDeg)            
 	REGISTER_COMMAND(melfunctions,mVecMatMult)
 	REGISTER_COMMAND(melfunctions,mVecCross)
 	REGISTER_COMMAND(melfunctions,mVecDot)
@@ -92,6 +105,7 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mVecRotateByEuler)
 //	REGISTER_COMMAND(melfunctions,mVecRotateByQuat)
 	REGISTER_COMMAND(melfunctions,mVecRotateByAxisAngle)
+	REGISTER_COMMAND(melfunctions,mVecAimUpToEuler)    
 	REGISTER_COMMAND(melfunctions,mVecIsEqual)
 	REGISTER_COMMAND(melfunctions,mVecIsNotEqual)
 	REGISTER_COMMAND(melfunctions,mVecIsEquivalent)
@@ -103,45 +117,36 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mVecAngle)
 	REGISTER_COMMAND(melfunctions,mVecLerp)    
 	REGISTER_COMMAND(melfunctions,mVecSlerp)        
-	REGISTER_COMMAND(melfunctions,mVecGetX)
-	REGISTER_COMMAND(melfunctions,mVecGetY)
-	REGISTER_COMMAND(melfunctions,mVecGetZ)
-	REGISTER_COMMAND(melfunctions,mVecGetComponent)
-	REGISTER_COMMAND(melfunctions,mVecSetX)
-	REGISTER_COMMAND(melfunctions,mVecSetY)
-	REGISTER_COMMAND(melfunctions,mVecSetZ)
-	REGISTER_COMMAND(melfunctions,mVecSetComponent)
 
 
-//uv
+	//uv management
 	REGISTER_COMMAND(melfunctions,mUVCreate)
-
 	REGISTER_COMMAND(melfunctions,mUVSize)
 	REGISTER_COMMAND(melfunctions,mUVAppend)
 	REGISTER_COMMAND(melfunctions,mUVGet)
 	REGISTER_COMMAND(melfunctions,mUVSet)
-   
 	REGISTER_COMMAND(melfunctions,mUVGetU)
 	REGISTER_COMMAND(melfunctions,mUVGetV)
 	REGISTER_COMMAND(melfunctions,mUVGetComponent)
-
 	REGISTER_COMMAND(melfunctions,mUVSetU)
 	REGISTER_COMMAND(melfunctions,mUVSetV)
 	REGISTER_COMMAND(melfunctions,mUVSetComponent)
 
 
-// double
+	// double management
 	REGISTER_COMMAND(melfunctions,mDblCreate)
 	REGISTER_COMMAND(melfunctions,mDblSize)
 	REGISTER_COMMAND(melfunctions,mDblAppend)
 	REGISTER_COMMAND(melfunctions,mDblGet)
 	REGISTER_COMMAND(melfunctions,mDblSet)
 
+	// double math
 	REGISTER_COMMAND(melfunctions,mDblAdd)
 	REGISTER_COMMAND(melfunctions,mDblSub)
 	REGISTER_COMMAND(melfunctions,mDblMult)
 	REGISTER_COMMAND(melfunctions,mDblDiv)
 	REGISTER_COMMAND(melfunctions,mDblNegate)
+
 
 	REGISTER_COMMAND(melfunctions,mDblIsEqual)
 	REGISTER_COMMAND(melfunctions,mDblIsNotEqual)
@@ -192,7 +197,7 @@ MStatus initializePlugin( MObject obj )
     REGISTER_COMMAND(melfunctions,mNeighbourInfo)
     
     // mesh functionality
-//    REGISTER_COMMAND(melfunctions,mUVMeshInfo)    
+//  REGISTER_COMMAND(melfunctions,mUVMeshInfo)    
     REGISTER_COMMAND(melfunctions,mVertexMeshInfo)        
 
 
@@ -204,19 +209,26 @@ MStatus uninitializePlugin( MObject obj )
 	MStatus   status;
 	MFnPlugin plugin( obj );
 
-	// matrix
+	// matrix management
     DEREGISTER_COMMAND(mMatCreate)
     DEREGISTER_COMMAND(mMatSize)
     DEREGISTER_COMMAND(mMatAppend)
     DEREGISTER_COMMAND(mMatGet)
     DEREGISTER_COMMAND(mMatSet)
-    
+	DEREGISTER_COMMAND(mMatGetComponent)
+	DEREGISTER_COMMAND(mMatSetComponent)
+//	REGISTER_COMMAND(mMatGetRow)
+//	REGISTER_COMMAND(mMatSetRow)
+//	REGISTER_COMMAND(mMatGetColumn)
+//	REGISTER_COMMAND(mMatSetColumn)
+
+	// matrix math
 	DEREGISTER_COMMAND(mMatAdd)
 	DEREGISTER_COMMAND(mMatSub)
 	DEREGISTER_COMMAND(mMatMult)
 	DEREGISTER_COMMAND(mMatDblMult)
 	DEREGISTER_COMMAND(mMatIsEqual)
-    DEREGISTER_COMMAND(mMatIsNotEqual)    
+	DEREGISTER_COMMAND(mMatIsNotEqual)    
 	DEREGISTER_COMMAND(mMatIsEquivalent)
 	DEREGISTER_COMMAND(mMatIsSingular)
 	DEREGISTER_COMMAND(mMatInverse)
@@ -225,40 +237,27 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mMatAdjoint)
 	DEREGISTER_COMMAND(mMatDet4x4)
 	DEREGISTER_COMMAND(mMatDet3x3)
-	DEREGISTER_COMMAND(mMatGetComponent)
-	DEREGISTER_COMMAND(mMatSetComponent)
 
-	// vector
+/*	REGISTER_COMMAND(mMatGetTranslation)
+	REGISTER_COMMAND(mMatSetTranslation)
+	REGISTER_COMMAND(mMatAddTranslation)
+	REGISTER_COMMAND(mMatGetRotation)
+	REGISTER_COMMAND(mMatSetRotation)
+	REGISTER_COMMAND(mMatAddRotation)
+	REGISTER_COMMAND(mMatGetScale)
+	REGISTER_COMMAND(mMatSetScale)
+	REGISTER_COMMAND(mMatAddScale)
+	REGISTER_COMMAND(mMatGetShear)
+	REGISTER_COMMAND(mMatSetShear)
+	REGISTER_COMMAND(mMatAddShear)
+*/
+
+	// vector management
     DEREGISTER_COMMAND(mVecCreate)
     DEREGISTER_COMMAND(mVecSize)
     DEREGISTER_COMMAND(mVecAppend)
     DEREGISTER_COMMAND(mVecGet)
     DEREGISTER_COMMAND(mVecSet)
-    
-	DEREGISTER_COMMAND(mVecAdd)
-	DEREGISTER_COMMAND(mVecSub)
-    
-	DEREGISTER_COMMAND(mVecDblMult)
-	DEREGISTER_COMMAND(mVecDblDiv)
-    DEREGISTER_COMMAND(mVecNegate)    
-	DEREGISTER_COMMAND(mVecMatMult)
-	DEREGISTER_COMMAND(mVecCross)
-	DEREGISTER_COMMAND(mVecDot)
-    DEREGISTER_COMMAND(mVecMult)
-	DEREGISTER_COMMAND(mVecRotateByEuler)
-//	DEREGISTER_COMMAND(mVecRotateByQuat)
-	DEREGISTER_COMMAND(mVecRotateByAxisAngle)
-	DEREGISTER_COMMAND(mVecIsEqual)
-	DEREGISTER_COMMAND(mVecIsNotEqual)
-	DEREGISTER_COMMAND(mVecIsEquivalent)
-	DEREGISTER_COMMAND(mVecLength)
-	DEREGISTER_COMMAND(mVecLengthSqr)
-    DEREGISTER_COMMAND(mVecSetLength)    
-	DEREGISTER_COMMAND(mVecDistance)
-	DEREGISTER_COMMAND(mVecNormal)
-	DEREGISTER_COMMAND(mVecAngle)
-	DEREGISTER_COMMAND(mVecLerp)        
-	DEREGISTER_COMMAND(mVecSlerp)            
 	DEREGISTER_COMMAND(mVecGetX)
 	DEREGISTER_COMMAND(mVecGetY)
 	DEREGISTER_COMMAND(mVecGetZ)
@@ -268,8 +267,36 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mVecSetZ)
 	DEREGISTER_COMMAND(mVecSetComponent)
 
+	// vector math    
+	DEREGISTER_COMMAND(mVecAdd)
+	DEREGISTER_COMMAND(mVecSub)
+	DEREGISTER_COMMAND(mVecDblMult)
+	DEREGISTER_COMMAND(mVecDblDiv)
+	DEREGISTER_COMMAND(mVecNegate)    
+	DEREGISTER_COMMAND(mVecDegToRad)    
+	DEREGISTER_COMMAND(mVecRadToDeg)            
+	DEREGISTER_COMMAND(mVecMatMult)
+	DEREGISTER_COMMAND(mVecCross)
+	DEREGISTER_COMMAND(mVecDot)
+	DEREGISTER_COMMAND(mVecMult)    
+	DEREGISTER_COMMAND(mVecRotateByEuler)
+//	DEREGISTER_COMMAND(mVecRotateByQuat)
+	DEREGISTER_COMMAND(mVecRotateByAxisAngle)
+	DEREGISTER_COMMAND(mVecAimUpToEuler)        
+	DEREGISTER_COMMAND(mVecIsEqual)
+	DEREGISTER_COMMAND(mVecIsNotEqual)
+	DEREGISTER_COMMAND(mVecIsEquivalent)
+	DEREGISTER_COMMAND(mVecLength)
+	DEREGISTER_COMMAND(mVecLengthSqr)
+	DEREGISTER_COMMAND(mVecSetLength)    
+	DEREGISTER_COMMAND(mVecDistance)
+	DEREGISTER_COMMAND(mVecNormal)
+	DEREGISTER_COMMAND(mVecAngle)
+	DEREGISTER_COMMAND(mVecLerp)    
+	DEREGISTER_COMMAND(mVecSlerp)        
 
-//uv
+
+	//uv management
 	DEREGISTER_COMMAND(mUVCreate)
 	DEREGISTER_COMMAND(mUVSize)
 	DEREGISTER_COMMAND(mUVAppend)
@@ -282,18 +309,21 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mUVSetV)
 	DEREGISTER_COMMAND(mUVSetComponent)
 
-    // double
+
+	// double management
 	DEREGISTER_COMMAND(mDblCreate)
 	DEREGISTER_COMMAND(mDblSize)
 	DEREGISTER_COMMAND(mDblAppend)
 	DEREGISTER_COMMAND(mDblGet)
 	DEREGISTER_COMMAND(mDblSet)
 
+	// double math
 	DEREGISTER_COMMAND(mDblAdd)
 	DEREGISTER_COMMAND(mDblSub)
 	DEREGISTER_COMMAND(mDblMult)
 	DEREGISTER_COMMAND(mDblDiv)
 	DEREGISTER_COMMAND(mDblNegate)
+
 
 	DEREGISTER_COMMAND(mDblIsEqual)
 	DEREGISTER_COMMAND(mDblIsNotEqual)
@@ -301,7 +331,7 @@ MStatus uninitializePlugin( MObject obj )
 
 	DEREGISTER_COMMAND(mDblMin)
 	DEREGISTER_COMMAND(mDblMax)
-    
+
 	DEREGISTER_COMMAND(mDblAbs)
 	DEREGISTER_COMMAND(mDblSign)
 
@@ -340,12 +370,13 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mDblLinStep)
 	DEREGISTER_COMMAND(mDblFit)
 
-
-	// info
+	// neighbour info
     DEREGISTER_COMMAND(mNeighbourInfo)
     
-//    DEREGISTER_COMMAND(mUVMeshInfo)    
+    // mesh functionality
+//  DEREGISTER_COMMAND(mUVMeshInfo)    
     DEREGISTER_COMMAND(mVertexMeshInfo)        
+
 
 	return status;
 }
