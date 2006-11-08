@@ -63,6 +63,7 @@ static const char* MVMI_COUNT_FLAG_LONG = "count";
 #define MVMI_CMD_ACTION_BINORMAL 4
 #define MVMI_CMD_ACTION_UV 5
 #define MVMI_CMD_ACTION_COLOR 6
+#define MVMI_CMD_ACTION_COUNT 7
 
 #define MVMI_CMD_SPACE_WORLD 0
 #define MVMI_CMD_SPACE_OBJECT 1
@@ -82,6 +83,7 @@ class mVertexMeshInfo : public MPxCommand
        MStatus     doVertexColor(MFnMesh &meshFn);                                                       
        MStatus     doVertexTangent(MFnMesh &meshFn);                   
        MStatus     doVertexBinormal(MFnMesh &meshFn);                          
+       MStatus     doVertexCount(MFnMesh &meshFn);                                 
        
        MStatus     getUVSet(MFnMesh &meshFn);                          
        

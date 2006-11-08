@@ -19,7 +19,8 @@ mayaplugin_cppsrcs = [  'src/plugin.cpp',
                         
                         'src/mMatrixCmd.cpp', 
                         
-                        'src/mVectorCmd.cpp', 
+                        'src/mVectorManagementCmd.cpp', 
+                        'src/mVectorMathCmd.cpp',                         
                         
                         'src/mDoubleCmd.cpp',     
                         

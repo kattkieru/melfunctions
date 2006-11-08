@@ -54,7 +54,7 @@ MStatus mVertexMeshInfo::help() const
     help += "//\t  -uvs|-UVSet        [string]  [C]  Only valid in conjunction with -uv|-tan flag, specify a string with the UVSet to use (by default the first one is used)\n\n";    
     help += "//\t  -col|-color                  [C]  Return color information at specified vertices (only the first one is returned!).\n";
     help += "//\t -cols|-colorSet     [string]  [C]  Only valid in conjunction with -col flag, specify a string with the colorSet to use (by default the first one is used)\n\n";    
-
+    help += "//\t   -co|-count                  [C]  Return number of vertices.\n";    
     help += "//\t    -h|-help                   [C]  Displays this help.\n\n";
     help += "//\t   mesh              [string]       Manadatory: Name of mesh.\n";
 
@@ -235,6 +235,22 @@ MStatus mVertexMeshInfo::parseArgs( const MArgList& args )
 		flagNum--;
 	}
 
+
+	// TODO do we want count?
+	if (argParseIsFlagSet(args,MVMI_COUNT_FLAG,MVMI_COUNT_FLAG_LONG,index))
+	{
+		if (mAction == MVMI_CMD_ACTION_NONE)
+			mAction = MVMI_CMD_ACTION_COUNT;
+		else
+		{
+			status = MS::kFailure;
+			USER_ERROR_CHECK(status,singleFlagError);    
+		}			
+		
+		flagNum--;
+	} 
+
+
 	// no action selected?	
 	if (mAction == MVMI_CMD_ACTION_NONE)
 	{	
@@ -409,6 +425,7 @@ MStatus mVertexMeshInfo::doVertexColor(MFnMesh &meshFn)
 	}
 	
 	setResult(result);
+    return status;    
 }
 
 //************************************************************************//
@@ -416,7 +433,8 @@ MStatus mVertexMeshInfo::doVertexColor(MFnMesh &meshFn)
 
 MStatus  mVertexMeshInfo::getUVSet(MFnMesh &meshFn)
 {
-	// check if the mesh has any uv sets
+
+    // check if the mesh has any uv sets
 	if (!meshFn.numUVSets())
 	{
 		USER_ERROR_CHECK(MS::kFailure,"mVertexMeshInfo: specified mesh does not have any uv information!");     
@@ -427,7 +445,8 @@ MStatus  mVertexMeshInfo::getUVSet(MFnMesh &meshFn)
 
 	if (mUVSetSet)
 	{
-		MStringArray uvSets;
+
+        MStringArray uvSets;
 		meshFn.getUVSetNames(uvSets);
 
 		// is the specified set part of the uv sets
@@ -440,7 +459,7 @@ MStatus  mVertexMeshInfo::getUVSet(MFnMesh &meshFn)
 				uvSet = mUVSet;
 			}
 		}
-		
+
 		if (!found) 
 		{
 			USER_ERROR_CHECK(MS::kFailure,"mVertexMeshInfo: specified uvSet could not be found on mesh!");
@@ -453,6 +472,7 @@ MStatus  mVertexMeshInfo::getUVSet(MFnMesh &meshFn)
 		mUVSet = uvSets[0];
 	}
 	
+
 	return MS::kSuccess;
 
 }
@@ -500,6 +520,7 @@ MStatus mVertexMeshInfo::doVertexUV(MFnMesh &meshFn)
 	}
 	
 	setResult(result);
+    return status;    
 }
 //************************************************************************//
 MStatus mVertexMeshInfo::doVertexPosition(MFnMesh &meshFn)
@@ -547,6 +568,7 @@ MStatus mVertexMeshInfo::doVertexPosition(MFnMesh &meshFn)
 	}
 	
 	setResult(result);
+    return status;    
 }
 //************************************************************************//
 MStatus mVertexMeshInfo::doVertexNormal(MFnMesh &meshFn)
@@ -625,14 +647,16 @@ MStatus mVertexMeshInfo::doVertexNormal(MFnMesh &meshFn)
 	}
 	
 	setResult(result);
+        return status;
 }
 
 //************************************************************************//
 MStatus mVertexMeshInfo::doVertexTangent(MFnMesh &meshFn)
 {
+
 	MStatus status = getUVSet(meshFn);
 	if(status.error()) return status;
-	
+
 	int numVert = meshFn.numVertices();
 	
 	// get tangents in the correct space
@@ -642,7 +666,9 @@ MStatus mVertexMeshInfo::doVertexTangent(MFnMesh &meshFn)
 	else
 		status = meshFn.getTangents(tangents, MSpace::kObject,&mUVSet);
 	
-
+    USER_ERROR_CHECK(status,"mVertexMeshInfo: error getting tangents, has the specified mesh a valid uv set?");
+		
+    
 	MDoubleArray result;
 	MFloatVector tangent;	
 	
@@ -671,8 +697,9 @@ MStatus mVertexMeshInfo::doVertexTangent(MFnMesh &meshFn)
 			result[id+2] = tangent.z;						
 		}
 	}
-		
+
 	setResult(result);
+    return status;    
 }
 //************************************************************************//
 MStatus mVertexMeshInfo::doVertexBinormal(MFnMesh &meshFn)
@@ -688,7 +715,9 @@ MStatus mVertexMeshInfo::doVertexBinormal(MFnMesh &meshFn)
 		status = meshFn.getBinormals(binormals, MSpace::kWorld,&mUVSet);
 	else
 		status = meshFn.getBinormals(binormals, MSpace::kObject,&mUVSet);
-	
+
+    USER_ERROR_CHECK(status,"mVertexMeshInfo: error getting binormals, has the specified mesh a valid uv set?");
+    	
 	MDoubleArray result;
 	MFloatVector binormal;	
 	
@@ -719,7 +748,19 @@ MStatus mVertexMeshInfo::doVertexBinormal(MFnMesh &meshFn)
 	}
 		
 	setResult(result);
+    return status;
 }
+
+//************************************************************************//
+MStatus mVertexMeshInfo::doVertexCount(MFnMesh &meshFn)
+{
+	MStatus status = MS::kSuccess;
+	int numVert = meshFn.numVertices();
+	setResult(numVert);
+    return status;    
+}
+//************************************************************************//
+
 //************************************************************************//
 // do the actual computation
 MStatus mVertexMeshInfo::redoIt()
@@ -781,6 +822,7 @@ MStatus mVertexMeshInfo::redoIt()
 			case MVMI_CMD_ACTION_TANGENT:	return doVertexTangent(meshFn);
 			case MVMI_CMD_ACTION_BINORMAL:	return doVertexBinormal(meshFn); 			
 			case MVMI_CMD_ACTION_COLOR:		return doVertexColor(meshFn);
+			case MVMI_CMD_ACTION_COUNT:		return doVertexCount(meshFn);            
 		}
 	}
 	else
@@ -795,3 +837,4 @@ MStatus mVertexMeshInfo::redoIt()
 	
 
 } // end namespace
+

@@ -5,9 +5,14 @@
 #include <maya/MFnPlugin.h>
 
 #include "../include/mHelperMacros.h"
+
 #include "../include/mMatrixCmd.h"
-#include "../include/mVectorCmd.h"
+
+#include "../include/mVectorManagementCmd.h"
+#include "../include/mVectorMathCmd.h"
+
 #include "../include/mDoubleCmd.h"
+
 #include "../include/mUVManagementCmd.h"
 
 #include "../include/mNeighbourInfoCmd.h"
@@ -344,4 +349,5 @@ MStatus uninitializePlugin( MObject obj )
 
 	return status;
 }
+
 
