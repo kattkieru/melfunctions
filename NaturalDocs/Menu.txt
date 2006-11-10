@@ -1,7 +1,7 @@
 Format: 1.35
 
 
-Title: melfunctions 0.2
+Title: melfunctions 0.3
 
 # You can also add a sub-title to your menu like this:
 # SubTitle: [subtitle]
@@ -29,19 +29,35 @@ Footer: (c) Carsten Kolve, 2006
 # --------------------------------------------------------------------------
 
 
-File: About  (src\about.cpp)
+File: About  (about.cpp)
+File: Usage  (usage.cpp)
 
-Group: Math  {
+Group: Double Arrays  {
 
-   File: Vector Commands  (src\mVectorCmd.cpp)
-   File: Matrix Commands  (src\mMatrixCmd.cpp)
-   }  # Group: Math
+   File: Management & Math  (no auto-title, mDoubleCmd.cpp)
+   }  # Group: Double Arrays
 
-Group: Scriptable Nodes  {
+Group: UV Arrays  {
 
-   File: mScriptDeformer  (src\mScriptDeformerNode.cpp)
-   File: mScriptField  (src\mScriptFieldNode.cpp)
-   }  # Group: Scriptable Nodes
+   File: Management  (no auto-title, mUVManagementCmd.cpp)
+   }  # Group: UV Arrays
+
+Group: Vector Arrays  {
+
+   File: Management  (no auto-title, mVectorManagementCmd.cpp)
+   File: Math  (no auto-title, mVectorMathCmd.cpp)
+   }  # Group: Vector Arrays
+
+Group: Matrix Arrays  {
+
+   File: Management & Math  (no auto-title, mMatrixCmd.cpp)
+   }  # Group: Matrix Arrays
+
+Group: Maya Object Info  {
+
+   File: mVertexMeshInfo  (no auto-title, mVertexMeshInfoCmd.cpp)
+   File: mNeighbourInfo  (no auto-title, mNeighbourInfoCmd.cpp)
+   }  # Group: Maya Object Info
 
 Group: Index  {
 

@@ -7,7 +7,6 @@
 // hidden power formerly only available to C++ developers. Hopefully it will make it easier and faster to create more advanced 
 // software using Maya's embedded scripting language.
 //
-// If you want to compile melfunctions it for your favourite OS give me a shout and I'm sure we can work something out.
 //
 // Installation:
 // Installation is easy, just unzip the package and place the file "melfunctions.mll" (.so on linux) in your
@@ -15,7 +14,7 @@
 //
 // Loading the plugin:
 // After the plugin is succesfully loaded you can start using it in your scripts just like any other MEL command.
-// There is howeever one thing to be aware of. *IMPORTANT*: MEL files that were sourced before the plugin was loaded
+// There is however one thing to be aware of. *IMPORTANT*: MEL files that were sourced before the plugin was loaded
 // won't know about the commands available through the plugin. So if you are using the commands in your scripts
 // make sure the plugin is loaded prior to sourcing them. This can be achieved by:
 // - setting the load settings in the plugin window to "autoload"
@@ -24,18 +23,28 @@
 // - have a small control script which a) loads the plugin and then b) sources your actual script prior to executing it
 //
 // Version History:
+// - *0.3*, 10/11/06, added basic uv array support, various bugfixes, more dbl and vec functions, nearest neighbour lookup and mesh vertex informations
 // - *0.2*, 02/09/06, changed matrix functions to work with arrays, added many double and vector array commands,
 // due to various changes backwardscompatibility is not guaranteed 
 // - *0.1*, 16/02/06, initial release with a basic set of 15 matrix functions 
 //
+// Source Code:
+// The subversion directory to the source code is located here: <http://code.google.com/p/melfunctions/> , feel free to check out the code
+// look at how it works and make contributions to it! If you recompiled a version for a new platform, please send it to me so I can include 
+// it in the package of compiled versions.
+//
 // Disclaimer:
 // melfunctions, Copyright (C) 2006 Carsten Kolve, <http://www.kolve.com>, carsten@kolve.com
-// The standard disclaimer applies, this software comes without any warranties, there is not even a guarantee it works. Use it at your own risk!
-// 
-// Please read carefully as this is important: melfunctions is NOT free software. melfunctions is *charityware* <http://en.wikipedia.org/wiki/Charityware>, this mean that
-// in case you want to use this software commercially you are asked to donate an amount of money to a charity. If you are using
-// the software for private or educational purposes then there is no obligation to donate any money, but it certainly would be appreciated!
-// 
+// Licensed under the GNU General Public License
+// This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program; if not, 
+// visit <http://www.gnu.org/licenses/gpl.txt> or write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+// MA 02111-1307 USA.
+//
+// If you are finding this software useful please consider donating some money to a charity of your choice.
 // If you are not sure which charity to donate to, I recommend the *Doctors Without Borders / Medicines Sans Frontieres* <http://www.msf.org/>. 
 // Here is a webpage with a list of their national offices <http://www.msf.org/msfinternational/donations/>. It's best to donate to your national office as they can provide you with tax receipts.
 // As to the question how much to donate, well that is entirely up to you - please do however take into account the amount of money it would have cost you to develop a similar solution inhouse, 

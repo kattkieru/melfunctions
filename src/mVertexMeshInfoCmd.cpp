@@ -1,3 +1,6 @@
+// Title: mVertexMeshInfo Command
+//
+
 #include <maya/MArgList.h>
 #include <maya/MArgDatabase.h>
 #include <maya/MStringArray.h>
@@ -10,6 +13,52 @@
 #include "../include/mHelperMacros.h"
 #include "../include/mVertexMeshInfoCmd.h"
 #include "../include/mHelperFunctions.h"
+
+
+/*
+   Function: mVertexMeshInfo
+
+   This command gives you information about a mesh at its vertices.
+
+   Parameters:
+
+	-vert|-vertex  - 	[float[]]  Optional: Specify list of vertex ids to be used in the query, if none is specified information for ALL vertices will be returned
+ 	-pos|-position  -    		  Return position vector at specified vertices
+	-norm|-normal     -  		  Return normals vector at specified vertices
+	 -tan|-tangent     -          Return tangent vector at specified vertices in u direction (only works if mesh has a valid uvSet!)
+	 -bin|-binormal     -         Return binormal vector at specified vertices (only works if mesh has a valid uvSet!)
+  -ws|-worldSpace    -          Return results in world space (default) (only valid in conjunction with -pos|-norm and -tan flags!)
+  -os|-objectSpace    -         Return results in object space (only valid in conjunction with -pos|-norm and -tan flags!) 
+  -uv|-UV              -        Return uv information at specified vertices (only the first uv per vertex is returned!)
+ -uvs|-UVSet       - [string]   Specify a string with the UVSet to use (by default the first one is used, flag only valid in conjunction with -uv|-tan|-bin flag!)
+ -col|-color       -            Return color information at specified vertices (only the first color per vertex one is returned!)
+-cols|-colorSet    - [string]   Specify a string with the colorSet to use (by default the first one is used, only valid in conjunction with -col flag!)
+  -co|-count       -            Return number of vertices.
+   -h|-help        -            Displays the help.
+  mesh             - [string]       Manadatory: Name of mesh.
+
+
+   Returns:
+
+      The result is dependent on the provided flags
+
+   Examples:
+
+      polySphere;
+      
+      mVertexMeshInfo -count pSphere1;
+      
+      // Result:382//
+      
+	  mVertexMeshInfo -position -worldSpace pSphere1;
+      
+      // Result:0.148778 -0.987688 -0.0483409 0.126558 -0.987688 -0.0919499 0.0919499 -0.987688 -0.126558 ...
+      
+      mVertexMeshInfo -tangent -worldSpace -uvSet "map1" pSphere1;
+      
+      // Result:-0.450486 -0.0241735 -0.892456 -0.457224 0.0241743 -0.889023 -0.466618 ...
+*/
+
 
 namespace melfunctions
 {

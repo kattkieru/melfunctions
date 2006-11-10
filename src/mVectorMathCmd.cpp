@@ -1,10 +1,6 @@
-/*
 
-//DECLARE_COMMAND(mVecRotateByQuat)
 
-*/
-
-// Title: Vector Array Commands
+// Title: Vector Array Math Commands
 //
 // About:
 // This functionset gives you all the commands you already know from mel (+ a few extras) wrapped so they work with arrays.

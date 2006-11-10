@@ -28,7 +28,7 @@ mayaplugin_cppsrcs = [  'src/plugin.cpp',
                         
                         'src/mNeighbourInfoCmd.cpp',     
                         
-                        'src/mUVMeshInfoCmd.cpp',
+#                        'src/mUVMeshInfoCmd.cpp',
                         'src/mVertexMeshInfoCmd.cpp',                        
                         
                         'src/mHelperFunctions.cpp',

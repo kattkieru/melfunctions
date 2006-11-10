@@ -1,3 +1,6 @@
+// Title: mNeighbourInfo Command
+
+
 #include <maya/MArgList.h>
 #include <maya/MArgDatabase.h>
 #include <maya/MStringArray.h>
@@ -7,6 +10,83 @@
 #include "../include/mHelperMacros.h"
 #include "../include/mNeighbourInfoCmd.h"
 #include "../include/mHelperFunctions.h"
+
+
+/*
+   Function: mNeighbourInfo
+
+This Command allows you to create, edit and query mNeighbourInfo objects which allow you to efficiently
+find for a set of LOOKUP POINTS a set of NEIGHBOURing POINTS in a LOOKUP RANGE around the LOOKUP POINTS.
+
+
+Parameters:
+
+-np|-neighbourPoint     - [CE]    Specify a vector array of points used as the neighbouring points (doubleArray).
+-lp|-lookupPoint        - [Q]     Mandator upon Query: Specify a vector array of points which will be the lookup points (doubleArray!).
+                                (must have same 1 or same amount of values than there are lookup ranges) (double value or doubleArray)     
+-lr|-lookupRange        - [Q]     Mandator upon Query: Specify a double array of radii around each lookup points used as the lookup range 
+                                (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray) 
+ -nir|-nearestInRange    - [Q]     Returns for each lookup point the index of the nearest neighbour point in the lookup range
+                                  or -1 if none is found. (doubleArray)    
+ -fir|-furthestInRange    -[Q]     Returns for each lookup point the index of the furthest neighbour point in the lookup range
+                                  or -1 if none is found. (doubleArray)   
+ -rir|-randomInRange     - [Q]     Returns for each lookup point the index of a random neighbour point in the lookup range
+                                  or -1 if none is found. (doubleArray)       
+ -air|-allInRange        - [Q]     Specify an index  of a lookup point (int) and it will return an array of indices of neighbour points
+                                  in the lookup range or -1 if none is found. (doubleArray)  
+ -cir|-countInRange      - [Q]     Returns for each lookup point the number of neighbour point in the lookup range (doubleArray)
+ -pos|-position         -  [Q]     Use this option when querying to return the positions of the neighbours instead of their indices
+   -l|-list             -  [C]     Returns all mNeighbourInfo object names (as a stringArray)
+   -d|-delete          -   [E]     Delete the specified mNeighbourInfo object.    
+  -da|-deleteAll        -  [C]     Delete all mNeighbourInfo objects.    
+   -h|-help            -   [C]     Displays this help.
+
+
+ - [C]reate [E]dit [Q]uery flags
+
+   Returns:
+
+      The result is dependent on the provided flags
+
+   Examples:
+   
+   // create a particle system, then
+   
+   float $points[] = `getAttr particle1.worldPosition`;
+   
+   string $myNI = `mNeighbourInfo -neighbourPoint $points`
+   
+   // Result:mNeighbourInfoObject0//
+   
+   float $lookupPoints[] = {0.0, 1, 0, 2, 0, 0};
+   
+   float $lookupRadius[] = {2.0};
+   
+   mNeighbourInfo -lookupPoint $lookupPoints -lookupRange $lookupRadius -nearestInRange $myNI;
+   
+   // Example Result: 5 9 (id's of respective positions in $points)//
+   
+   mNeighbourInfo -lookupPoint $lookupPoints -lookupRange $lookupRadius -nearestInRange -position $myNI;
+   
+   // Example Result: 0.5 1 0 1 0 0 (actual positions of id 5 and 9 in $points)//
+
+   // optaining the velocities of the nearest particles to our lookupPoints points
+   //
+   
+   float $velocities[] = `getAttr particle1.velocity`;
+   
+   float $nearestId[] = `mNeighbourInfo -lookupPoint $lookupPoints -lookupRange $lookupRadius -nearestInRange $myNI`;
+   
+   mVecGet($velocities, $nearestId);
+   
+   // Example Result: 1 0 0 1 1 0 (velocities of id 5 and 9 in respective to the $points array)//
+   
+   // it's a good idea to delete the neighbour info object after using it, so the memory is freed
+   
+   mNeighbourInfo -delete $myNI;
+
+*/
+
 
 namespace melfunctions
 {

@@ -1,5 +1,5 @@
 
-// Title: Vector Array Commands
+// Title: Vector Array Management Commands
 //
 // About:
 // This functionset gives you all the commands you already know from mel (+ a few extras) wrapped so they work with arrays.
