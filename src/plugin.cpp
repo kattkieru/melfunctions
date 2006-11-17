@@ -1,3 +1,16 @@
+/* COPYRIGHT --
+ *
+ * This file is part of melfunctions, a collection of mel commands to for Autodesk Maya.
+ * melfunctions is (c) 2006 Carsten Kolve <carsten@kolve.com>
+ * and distributed under the terms of the GNU GPL V2.
+ * See the ./License-GPL.txt file in the source tree root for more information.
+ *
+ * THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES
+ * OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+
 //
 // plugin.cpp, de/register all commands with maya
 //
@@ -15,6 +28,9 @@
 
 #include "../include/mUVManagementCmd.h"
 
+#include "../include/mNoiseCmd.h"
+
+#include "../include/m2dShaderInfoCmd.h"
 #include "../include/mNeighbourInfoCmd.h"
 
 #include "../include/mUVMeshInfoCmd.h"
@@ -25,12 +41,13 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Carsten Kolve", "0.3", "Any");
-	MGlobal::displayInfo("----------------------------------------------------------------------");
-	MGlobal::displayInfo("melfunctions 0.3 (c) Carsten Kolve, 2006");
-	MGlobal::displayInfo("Free for educational and private use - charityware for commercial use!");
+	MFnPlugin plugin( obj, "Carsten Kolve", "0.4", "Any");
+	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
+	MGlobal::displayInfo("melfunctions 0.4 (c) Carsten Kolve, 2006");
+    MGlobal::displayInfo("Contributions to this plugin (c) Rising Sun Pictures PTY Ltd, www.rsp.com.au");
+	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider a donation to a charity!");
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");
-	MGlobal::displayInfo("-----------------------------------------------------------------------");
+	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
     
 	// matrix management
     REGISTER_COMMAND(melfunctions,mMatCreate)
@@ -193,6 +210,13 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mDblLinStep)
 	REGISTER_COMMAND(melfunctions,mDblFit)
 
+	// noise
+	REGISTER_COMMAND(melfunctions,mSeed)    
+	REGISTER_COMMAND(melfunctions,mDblRand)
+	REGISTER_COMMAND(melfunctions,mDblGauss)    
+    
+    REGISTER_COMMAND(melfunctions,m2dShaderInfo)
+     
 	// neighbour info
     REGISTER_COMMAND(melfunctions,mNeighbourInfo)
     
@@ -370,6 +394,14 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mDblLinStep)
 	DEREGISTER_COMMAND(mDblFit)
 
+	// noise
+	DEREGISTER_COMMAND(mSeed)    
+	DEREGISTER_COMMAND(mDblRand)
+	DEREGISTER_COMMAND(mDblGauss)        
+
+	// shader 
+    DEREGISTER_COMMAND(m2dShaderInfo)
+    
 	// neighbour info
     DEREGISTER_COMMAND(mNeighbourInfo)
     
