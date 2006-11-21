@@ -91,7 +91,10 @@ class mVertexMeshInfo : public MPxCommand
        
        MStatus     doIt( const MArgList& );
        MStatus     redoIt();            
+
+#if MAYA_API_VERSION >= 800	  
        MStatus     doVertexUV(MFnMesh &meshFn);                        
+#endif       
        MStatus     doVertexNormal(MFnMesh &meshFn);                                    
        MStatus     doVertexPosition(MFnMesh &meshFn);                                                
        MStatus     doVertexColor(MFnMesh &meshFn);                                                       

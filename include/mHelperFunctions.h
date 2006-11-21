@@ -25,6 +25,8 @@
 #include <maya/MIntArray.h>
 #include <maya/MArgList.h>
 #include <maya/MString.h>
+#include <maya/MDagPath.h>
+#include <maya/MPlug.h>
 
 #include <math.h>
 
@@ -51,6 +53,7 @@ MString pointArrayToString(MPointArray a);
 MString matrixToString(MMatrix m);
 
 MDoubleArray vectorArrayToDoubleArray(const MVectorArray &a);
+MVectorArray doubleArrayToVectorArray(const MDoubleArray &a);
 
 MStatus validMatIndex(const unsigned int row,const unsigned int column);
 MStatus validVecIndex(const unsigned int index);
@@ -94,6 +97,12 @@ MStatus argCountCheck( const MArgList& args, unsigned int count);
 MStatus getDoubleArrayArg( const MArgList& args, unsigned int argIndex, MDoubleArray &a);
 MStatus getIntArg( const MArgList& args, unsigned int argIndex, int &a);
 MStatus getDoubleArg( const MArgList& args, unsigned int argIndex, double &a);
+MStatus getStringArg( const MArgList& args, unsigned int argIndex, MString &a);
+
+MStatus getSelectionListFromString(const MString& cmdName, const MString& name, MSelectionList &sList);
+MStatus getDagPathFromString(const MString& cmdName, const MString& name, MDagPath &dp);
+MStatus getDependNodeFromString(const MString& cmdName, const MString& name, MObject &dn);
+MStatus getPlugFromString(const MString& cmdName, const MString& name, MPlug &plug);
 
 unsigned int maximum(const unsigned int &a,const unsigned int &b);
 

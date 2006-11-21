@@ -44,6 +44,15 @@ static const char* MSI_UV_FLAG_LONG = "UV";
 static const char* MSI_COLOR_FLAG = "col";
 static const char* MSI_COLOR_FLAG_LONG = "color";
 
+static const char* MSI_COLOR_RED_FLAG = "colr";
+static const char* MSI_COLOR_RED_FLAG_LONG = "colorRed";
+
+static const char* MSI_COLOR_GREEN_FLAG = "colg";
+static const char* MSI_COLOR_GREEN_FLAG_LONG = "colorGreen";
+
+static const char* MSI_COLOR_BLUE_FLAG = "colb";
+static const char* MSI_COLOR_BLUE_FLAG_LONG = "colorBlue";
+
 static const char* MSI_VALUE_FLAG = "val";
 static const char* MSI_VALUE_FLAG_LONG = "value";
 
@@ -51,10 +60,13 @@ static const char* MSI_TRANSPARENCY_FLAG = "trans";
 static const char* MSI_TRANSPARENCY_FLAG_LONG = "transparency";
 
 
-#define MSI_CMD_ACTION_NONE 0
-#define MSI_CMD_ACTION_COLOR 1
-#define MSI_CMD_ACTION_VALUE 2
-#define MSI_CMD_ACTION_TRANSPARENCY 3
+#define MSI_CMD_ACTION_NONE 		0
+#define MSI_CMD_ACTION_COLOR 		1
+#define MSI_CMD_ACTION_COLOR_RED 	2
+#define MSI_CMD_ACTION_COLOR_GREEN 	3
+#define MSI_CMD_ACTION_COLOR_BLUE 	4
+#define MSI_CMD_ACTION_VALUE 		5
+#define MSI_CMD_ACTION_TRANSPARENCY 6
 
 
 class m2dShaderInfo : public MPxCommand 

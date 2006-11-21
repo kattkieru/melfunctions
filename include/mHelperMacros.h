@@ -64,8 +64,6 @@
 #define ERROR_FAIL(stat)		\
 	if ( MS::kSuccess != stat ) \
 	{	\
-		MString err = "execution failed!";\
-		MGlobal::displayError(err); \
 		return MS::kFailure;		\
 	}
 

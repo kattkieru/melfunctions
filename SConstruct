@@ -27,13 +27,16 @@ mayaplugin_cppsrcs = [  'src/plugin.cpp',
                         'src/mUVManagementCmd.cpp',     
                         
                         'src/mNoiseCmd.cpp',     
-
+                        
+                        'src/mAttrCmd.cpp',     
+                        
                         'src/m2dShaderInfoCmd.cpp',                             
                         'src/mNeighbourInfoCmd.cpp',     
                         
-                        'src/mUVMeshInfoCmd.cpp',
+#                       'src/mUVMeshInfoCmd.cpp',
                         'src/mVertexMeshInfoCmd.cpp',                        
-                        
+                        'src/mInstancerInfoCmd.cpp',                        
+                                                
                         'src/mHelperFunctions.cpp',
                         
                      ]

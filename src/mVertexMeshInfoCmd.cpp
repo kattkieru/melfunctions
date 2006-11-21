@@ -43,7 +43,7 @@
 	 -bin|-binormal     -         Return binormal vector at specified vertices (only works if mesh has a valid uvSet!)
   -ws|-worldSpace    -          Return results in world space (default) (only valid in conjunction with -pos|-norm and -tan flags!)
   -os|-objectSpace    -         Return results in object space (only valid in conjunction with -pos|-norm and -tan flags!) 
-  -uv|-UV              -        Return uv information at specified vertices (only the first uv per vertex is returned!)
+  -uv|-UV              -        Return uv information at specified vertices (only the first uv per vertex is returned!)(Maya 8 only)
  -uvs|-UVSet       - [string]   Specify a string with the UVSet to use (by default the first one is used, flag only valid in conjunction with -uv|-tan|-bin flag!)
  -col|-color       -            Return color information at specified vertices (only the first color per vertex one is returned!)
 -cols|-colorSet    - [string]   Specify a string with the colorSet to use (by default the first one is used, only valid in conjunction with -col flag!)
@@ -368,24 +368,7 @@ MStatus mVertexMeshInfo::parseArgs( const MArgList& args )
 		return status;
 	else 
 	{
-		// get the dagpath to the object
-		MSelectionList meshList;
-		status = meshList.add(mMeshName);
-		if (status = MS::kInvalidParameter)
-		{
-			status = MS::kFailure;
-			USER_ERROR_CHECK(status,("mVertexMeshInfo: the provided mesh does not exist!!"));    		
-		}
-		
-		if(meshList.length() > 1)
-		{
-			status = MS::kFailure;
-			USER_ERROR_CHECK(status,("mVertexMeshInfo: more than one object match the provided mesh name!"));    		
-		}
-		
-		status = meshList.getDagPath(0,mMeshDP);
-		USER_ERROR_CHECK(status,("mVertexMeshInfo: error getting mesh object! - does object exist? multiple objects with same name (use full path)?"));    		
-		
+		status = getDagPathFromString(commandString(),mMeshName,mMeshDP);
 		flagNum--;
 	}
 
@@ -539,7 +522,8 @@ MStatus  mVertexMeshInfo::getUVSet(MFnMesh &meshFn)
 	return MS::kSuccess;
 
 }
-	   
+
+#if MAYA_API_VERSION >= 800	   
 MStatus mVertexMeshInfo::doVertexUV(MFnMesh &meshFn)
 {
 	MStatus status = getUVSet(meshFn);
@@ -585,6 +569,7 @@ MStatus mVertexMeshInfo::doVertexUV(MFnMesh &meshFn)
 	setResult(result);
     return status;    
 }
+#endif // maya8
 //************************************************************************//
 MStatus mVertexMeshInfo::doVertexPosition(MFnMesh &meshFn)
 {
@@ -857,7 +842,9 @@ MStatus mVertexMeshInfo::redoIt()
 		
 		switch (mAction)
 		{
+        	#if MAYA_API_VERSION >= 800	  
 			case MVMI_CMD_ACTION_UV:		return doVertexUV(meshFn);
+            #endif
 			case MVMI_CMD_ACTION_POSITION:	return doVertexPosition(meshFn);
 			case MVMI_CMD_ACTION_NORMAL:	return doVertexNormal(meshFn);
 			case MVMI_CMD_ACTION_TANGENT:	return doVertexTangent(meshFn);

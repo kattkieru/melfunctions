@@ -30,11 +30,13 @@
 
 #include "../include/mNoiseCmd.h"
 
+#include "../include/mAttrCmd.h"
 #include "../include/m2dShaderInfoCmd.h"
 #include "../include/mNeighbourInfoCmd.h"
 
 #include "../include/mUVMeshInfoCmd.h"
 #include "../include/mVertexMeshInfoCmd.h"
+#include "../include/mInstancerInfoCmd.h"
 
 
 
@@ -45,7 +47,7 @@ MStatus initializePlugin( MObject obj )
 	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
 	MGlobal::displayInfo("melfunctions 0.4 (c) Carsten Kolve, 2006");
     MGlobal::displayInfo("Contributions to this plugin (c) Rising Sun Pictures PTY Ltd, www.rsp.com.au");
-	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider a donation to a charity!");
+	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider donating to a charity!");
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");
 	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
     
@@ -215,7 +217,12 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mDblRand)
 	REGISTER_COMMAND(melfunctions,mDblGauss)    
     
+   	// attributes
+    REGISTER_COMMAND(melfunctions,mDblSetAttr)    
+    REGISTER_COMMAND(melfunctions,mVecSetAttr)    
+
     REGISTER_COMMAND(melfunctions,m2dShaderInfo)
+    REGISTER_COMMAND(melfunctions,mInstancerInfo)    
      
 	// neighbour info
     REGISTER_COMMAND(melfunctions,mNeighbourInfo)
@@ -399,9 +406,14 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mDblRand)
 	DEREGISTER_COMMAND(mDblGauss)        
 
+	// attributes
+    DEREGISTER_COMMAND(mDblSetAttr)    
+    DEREGISTER_COMMAND(mVecSetAttr)        
+    
 	// shader 
     DEREGISTER_COMMAND(m2dShaderInfo)
-    
+    DEREGISTER_COMMAND(mInstancerInfo)    
+        
 	// neighbour info
     DEREGISTER_COMMAND(mNeighbourInfo)
     

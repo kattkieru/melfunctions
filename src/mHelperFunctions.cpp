@@ -13,6 +13,8 @@
 #include "../include/mHelperFunctions.h"
 #include "../include/mHelperMacros.h"
 
+#include <maya/MSelectionList.h>
+
 
 
 using namespace std;
@@ -87,15 +89,30 @@ MString matrixToString(MMatrix m)
 MDoubleArray vectorArrayToDoubleArray(const MVectorArray &a)
 {
 	// TODO: convert vector array to double array, can we us memcpy?
-    MDoubleArray result(a.length()*3,0);
+    MDoubleArray result(a.length()*ELEMENTS_VEC,0);
     for(int i=0;i<a.length();i++)
     {
-    	result[i*3]   = a[i].x;
-        result[i*3+1] = a[i].y;
-        result[i*3+2] = a[i].z;                        
+    	result[i*ELEMENTS_VEC]   = a[i].x;
+        result[i*ELEMENTS_VEC+1] = a[i].y;
+        result[i*ELEMENTS_VEC+2] = a[i].z;                        
 	}    
     return result;
 }
+
+MVectorArray doubleArrayToVectorArray(const MDoubleArray &a)
+{
+	int size = a.length()/3;
+	MVectorArray result(size);
+    for (int i=0;i<size;i++)
+    {
+    	int id = ELEMENTS_VEC*i;
+    	result[i].x = a[id];
+    	result[i].y = a[id+1];
+    	result[i].z = a[id+2];                
+    }
+    return result;
+}
+
 
 /*************************************************************/
 
@@ -476,6 +493,86 @@ MStatus getDoubleArg( const MArgList& args, unsigned int argIndex, double &a)
 	}
 }
 
+// get a single string from the arg list
+MStatus getStringArg( const MArgList& args, unsigned int argIndex,MString &a)
+{
+	MStatus stat;
+	MString s = args.asString(argIndex,&stat);
+	if (!stat.error())
+	{
+		a = s;
+		return stat;
+	}
+	else
+	{
+		// give up...
+		MString err("can't get string argument ");
+		err = err + (argIndex+1) + "!";
+		MGlobal::displayError(err);
+		return MS::kFailure;
+	}
+}
+
+
+// get the dag path from a string
+MStatus getSelectionListFromString(const MString& cmdName, const MString& name, MSelectionList &sList)
+{
+	sList.clear();
+    MStatus status = sList.add(name);
+    
+    
+	if (status == MS::kInvalidParameter)
+	{
+		status = MS::kFailure;
+		USER_ERROR_CHECK(status,(cmdName+MString(": the provided name does not exist!!")));    		
+	}
+		
+	if(sList.length() > 1)
+	{
+		status = MS::kFailure;
+		USER_ERROR_CHECK(status,(cmdName+MString(":more than one object match the provided name!")));    		
+	}
+
+	return status;
+}
+
+MStatus getDagPathFromString(const MString& cmdName, const MString& name, MDagPath &dp)
+{
+	// get the dagpath to the object
+	MSelectionList sList;
+	MStatus status = getSelectionListFromString(cmdName,name,sList);
+    ERROR_FAIL(status);
+		
+	status = sList.getDagPath(0,dp);
+	USER_ERROR_CHECK(status,(cmdName+MString(":error getting object! - does object exist? are there multiple objects with same name (use full path)?")));    		
+
+	return status;
+}
+
+
+MStatus getDependNodeFromString(const MString& cmdName, const MString& name, MObject &dn)
+{
+	MSelectionList sList;
+	MStatus status = getSelectionListFromString(cmdName,name,sList);
+    ERROR_FAIL(status);
+    
+	status = sList.getDependNode(0,dn);
+	USER_ERROR_CHECK(status,(cmdName+MString(":error getting object! - does object exist? are there multiple objects with same name (use full path)?")));    		
+
+	return status;
+}
+
+MStatus getPlugFromString(const MString& cmdName, const MString& name, MPlug &plug)
+{
+	MSelectionList sList;
+	MStatus status = getSelectionListFromString(cmdName,name,sList);
+	USER_ERROR_CHECK(status,(cmdName+MString(":error getting selection list for attribute?")));    		
+
+    
+	status = sList.getPlug(0,plug);
+	USER_ERROR_CHECK(status,(cmdName+MString(":error getting attribute! - does object/attribute??")));    		
+	return status;
+}
 
 //
 //
@@ -1263,5 +1360,6 @@ MStatus getArgMatDblDblDbl(const MArgList& args, MDoubleArray  & matA,MDoubleArr
 
 
 }// namespace
+
 
 
