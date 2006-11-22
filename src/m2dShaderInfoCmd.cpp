@@ -40,17 +40,17 @@
 
    Parameters:
 
-   -uv|-UV     -  [float[]]   Mandatory: Specify list of UV's to be used in the query\n";
-    -u|-U      -  [float[]]   Or: Specify list of U's to be used in the query, don't use in conjunction with -uv flag\n";
-    -v|-V      -  [float[]]   Or: Specify list of V's to be used in the query, don't use in conjunction with -uv flag\n";
-  -col|-color  -              Default: Return color of shader at specified UV's.\n";
-  -colr|-colorRed  -          Or: Return red component of color specified UV's.\n";
-  -colg|-colorGreen  -        Or: Return green component of color specified UV's.\n";
-  -colg|-colorBlue  -         Or: Return blue component of color specified UV's.\n";      
-  -val|-value   -             Or: Return value (mean of color components) of shader at specified UV's.\n";
--trans|-transparency -        Or: Return transparency of shader at specified UV's.\n";    
-    -h|-help         -        Displays this help.\n\n";
-   shader       - [string]       Manadatory: Name of shading node.\n";
+   -uv|-UV     -  [float[]]   Mandatory: Specify list of UV's to be used in the query
+    -u|-U      -  [float[]]   Or: Specify list of U's to be used in the query, don't use in conjunction with -uv flag
+    -v|-V      -  [float[]]   Or: Specify list of V's to be used in the query, don't use in conjunction with -uv flag
+  -col|-color  -              Default: Return color of shader at specified UV's.
+  -colr|-colorRed  -          Or: Return red component of color specified UV's.
+  -colg|-colorGreen  -        Or: Return green component of color specified UV's.
+  -colg|-colorBlue  -         Or: Return blue component of color specified UV's.      
+  -val|-value   -             Or: Return value (mean of color components) of shader at specified UV's.
+-trans|-transparency -        Or: Return transparency of shader at specified UV's.    
+    -h|-help         -        Displays the help.
+   shader       - [string]       Manadatory: Name of shading node.
 
    Returns:
 

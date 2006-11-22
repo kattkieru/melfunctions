@@ -1,7 +1,7 @@
 Format: 1.35
 
 
-Title: melfunctions 0.3
+Title: melfunctions 0.4
 
 # You can also add a sub-title to your menu like this:
 # SubTitle: [subtitle]
@@ -53,11 +53,23 @@ Group: Matrix Arrays  {
    File: Management & Math  (no auto-title, mMatrixCmd.cpp)
    }  # Group: Matrix Arrays
 
-Group: Maya Object Info  {
+Group: Noise & Random  {
 
+   File: Random  (no auto-title, mNoiseCmd.cpp)
+   }  # Group: Noise & Random
+
+Group: Node Attributes  {
+
+   File: Attribute  (no auto-title, mAttrCmd.cpp)
+   }  # Group: Node Attributes
+
+Group: Object Info  {
+
+   File: m2dShaderInfo  (no auto-title, m2dShaderInfoCmd.cpp)
+   File: mInstancerInfo  (no auto-title, mInstancerInfoCmd.cpp)
    File: mVertexMeshInfo  (no auto-title, mVertexMeshInfoCmd.cpp)
    File: mNeighbourInfo  (no auto-title, mNeighbourInfoCmd.cpp)
-   }  # Group: Maya Object Info
+   }  # Group: Object Info
 
 Group: Index  {
 

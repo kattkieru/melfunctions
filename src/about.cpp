@@ -23,6 +23,7 @@
 // - have a small control script which a) loads the plugin and then b) sources your actual script prior to executing it
 //
 // Version History:
+// - *0.4*, 22/11/06, random functions, sampling of 2d shader, information about instancer, get and set array attributes etc.
 // - *0.3*, 10/11/06, added basic uv array support, various bugfixes, more dbl and vec functions, nearest neighbour lookup and mesh vertex informations
 // - *0.2*, 02/09/06, changed matrix functions to work with arrays, added many double and vector array commands,
 // due to various changes backwardscompatibility is not guaranteed 

@@ -28,6 +28,7 @@ namespace melfunctions
    Parameters:
 		doubleArrayA - double array 
         nodeAttr - node.attribute
+        
    Returns:
 
 */
@@ -124,6 +125,7 @@ bool mDblSetAttr::isUndoable() const
    Parameters:
 		doubleArrayA - double array or vectors
         nodeAttr - node.attribute
+        
    Returns:
 
 */
