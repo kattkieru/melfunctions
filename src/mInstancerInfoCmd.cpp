@@ -40,8 +40,8 @@
 
    Parameters:
 
-   -mat|-matrix     -   Get matrices for all instances (matrixArray)
-    -co|-count      -   Get number of instances (int)
+   -mat|-matrix     -   Get first instance matrix for all particles (matrixArray)
+    -co|-count      -   Get number of particles (int)
  -bbmin|-boundingBoxMin - Get bounding box minimum corner (vectorArray)
  -bbmax|-boundingBoxMax - Get bounding box maximum corner (vectorArray)
     -h|-help         -        Displays this help
@@ -83,8 +83,8 @@ MStatus mInstancerInfo::help() const
     MString help( "mInstancerInfo, melfunctions, (c) Carsten Kolve, 2006\n" );
     help += "This allows you to query information of a shader at specific uv's\n\n";
     help += "USAGE: mInstancerInfo\n";
-    help += "//\t   -co|-count     [C]  Mandatory: Get number of instances\n";
-    help += "//\t  -mat|-matrix         Or: Get transformation matrices of instances\n";
+    help += "//\t   -co|-count     [C]  Mandatory: Get number of particles\n";
+    help += "//\t  -mat|-matrix         Or: Get first instance matrix for all particles \n";
     help += "//\t-bbmin|-boundingBoxMin Or: Get bounding box minimum corner\n";    
     help += "//\t-bbmax|-boundingBoxMax Or: Get bounding box maximum corner\n";        
     help += "//\t   instancer [string]  Manadatory: Name of instancer node.\n";
