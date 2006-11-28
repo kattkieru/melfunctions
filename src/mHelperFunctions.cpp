@@ -530,7 +530,7 @@ MStatus getSelectionListFromString(const MString& cmdName, const MString& name, 
 	if(sList.length() > 1)
 	{
 		status = MS::kFailure;
-		USER_ERROR_CHECK(status,(cmdName+MString(":more than one object match the provided name!")));    		
+		USER_ERROR_CHECK(status,(cmdName+MString(":more than one object match the provided name (please be more specific, eg use the |fullPathName ) !")));    		
 	}
 
 	return status;

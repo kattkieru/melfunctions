@@ -20,6 +20,7 @@ namespace melfunctions
 {
 // wrapped in a macro, check out "helperMacros.h"
 
+
 DECLARE_COMMAND(mSeed)
 DECLARE_COMMAND(mDblRand)
 DECLARE_COMMAND(mDblGauss)

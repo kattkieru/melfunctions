@@ -37,15 +37,16 @@
 #include "../include/mUVMeshInfoCmd.h"
 #include "../include/mVertexMeshInfoCmd.h"
 #include "../include/mInstancerInfoCmd.h"
+#include "../include/mAnimCurveInfoCmd.h"
 
 
 
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Carsten Kolve", "0.4", "Any");
+	MFnPlugin plugin( obj, "Carsten Kolve", "0.5", "Any");
 	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
-	MGlobal::displayInfo("melfunctions 0.4 (c) Carsten Kolve, 2006");
+	MGlobal::displayInfo("melfunctions 0.5 (c) Carsten Kolve, 2006");
     MGlobal::displayInfo("Contributions to this plugin (c) Rising Sun Pictures PTY Ltd, www.rsp.com.au");
 	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider donating to a charity!");
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");
@@ -221,6 +222,7 @@ MStatus initializePlugin( MObject obj )
     REGISTER_COMMAND(melfunctions,mDblSetAttr)    
     REGISTER_COMMAND(melfunctions,mVecSetAttr)    
 
+    REGISTER_COMMAND(melfunctions,mAnimCurveInfo)
     REGISTER_COMMAND(melfunctions,m2dShaderInfo)
     REGISTER_COMMAND(melfunctions,mInstancerInfo)    
      
@@ -411,6 +413,7 @@ MStatus uninitializePlugin( MObject obj )
     DEREGISTER_COMMAND(mVecSetAttr)        
     
 	// shader 
+    DEREGISTER_COMMAND(mAnimCurveInfo)    
     DEREGISTER_COMMAND(m2dShaderInfo)
     DEREGISTER_COMMAND(mInstancerInfo)    
         

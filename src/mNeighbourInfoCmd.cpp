@@ -25,6 +25,7 @@
 #include "../include/mHelperFunctions.h"
 
 
+
 /*
    Function: mNeighbourInfo
 
@@ -37,8 +38,13 @@ Parameters:
 -np|-neighbourPoint     - [CE]    Specify a vector array of points used as the neighbouring points (doubleArray).
 -lp|-lookupPoint        - [Q]     Mandator upon Query: Specify a vector array of points which will be the lookup points (doubleArray!).
                                 (must have same 1 or same amount of values than there are lookup ranges) (double value or doubleArray)     
--lr|-lookupRange        - [Q]     Mandator upon Query: Specify a double array of radii around each lookup points used as the lookup range 
+-lr|-lookupRadius        - [Q]    Mandator upon Query: Specify a double array of radii around each lookup points used as the lookup range 
                                 (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray) 
+-ld|-lookupDirection     - [Q]    Optional upon Query, only valid in conjunction with -la flag: Specify a vector array of directions for each lookup points to look in
+                                (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray) 
+-la|-lookupAngle        - [Q]    Only valid in conjunction with -ld flag: Specify an angle around the lookupDirection (build a FieldOfView)
+                                (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray) 
+
  -nir|-nearestInRange    - [Q]     Returns for each lookup point the index of the nearest neighbour point in the lookup range
                                   or -1 if none is found. (doubleArray)    
  -fir|-furthestInRange    -[Q]     Returns for each lookup point the index of the furthest neighbour point in the lookup range
@@ -125,10 +131,13 @@ mNeighbourInfo::mNeighbourInfo()
 
     mQueryPosition = false;
 	mHelpFlagSet = false;    
-    mLookupRangeFlagSet = false;            
+    mLookupRadiusFlagSet = false;            
     mLookupPointFlagSet = false;            
     mNeighbourPointFlagSet = false;            
 
+    mLookupDirectionFlagSet = false;            
+    mLookupAngleFlagSet = false;                
+    mLookupFOV = false;                    
 }
 
 //************************************************************************//
@@ -142,8 +151,13 @@ void mNeighbourInfo::help() const
     help += "//\t  -np|-neighbourPoint     [CE]    Specify a vector array of points used as the neighbouring points (doubleArray).\n";
     help += "//\t  -lp|-lookupPoint        [Q] 	   Mandator upon Query: Specify a vector array of points which will be the lookup points (doubleArray!).\n";
     help += "//\t                                  (must have same 1 or same amount of values than there are lookup ranges) (double value or doubleArray)\n";     
-    help += "//\t  -lr|-lookupRange        [Q]     Mandator upon Query: Specify a double array of radii around each lookup points used as the lookup range \n";
+    help += "//\t  -lr|-lookupRadius       [Q]     Mandator upon Query: Specify a double array of radii around each lookup points used as the lookup range \n";
     help += "//\t                                  (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray)\n"; 
+    help += "//\t  -ld|-lookupDirection    [Q]     Optional, must be used with -la flag: Specify a vector array of direction from each lookup point\n";
+    help += "//\t                                  (must have same 1 or same amount of values than there are lookup points) (vector value or doubleArray)\n"; 
+    help += "//\t  -la|-lookupAngle        [Q]     Optional, must be used with -ld flag: Specify a double array of angles (rad) around the lookupDirection\n";
+    help += "//\t                                  (must have same 1 or same amount of values than there are lookup points) (double value or doubleArray)\n"; 
+
     help += "//\t -nir|-nearestInRange     [Q]     Returns for each lookup point the index of the nearest neighbour point in the lookup range\n";
     help += "//\t                                  or -1 if none is found. (doubleArray)\n";    
     help += "//\t -fir|-furthestInRange    [Q]     Returns for each lookup point the index of the furthest neighbour point in the lookup range\n";
@@ -347,12 +361,12 @@ MStatus mNeighbourInfo::parseArgs( const MArgList& args )
     else // QUERY
     {
     	// can only query if the lookup info is provided
-		status = argParseGetDblArrayArg(args, LOOKUP_RANGE_FLAG, LOOKUP_RANGE_FLAG_LONG, mLookupRange, flagSet ); 
+		status = argParseGetDblArrayArg(args, LOOKUP_RADIUS_FLAG, LOOKUP_RADIUS_FLAG_LONG, mLookupRadius, flagSet ); 
 		if (status.error()) return status;
 		if (flagSet)
 		{
 			flagNum -=2;
-			mLookupRangeFlagSet = true;
+			mLookupRadiusFlagSet = true;
 		}
 
 		status = argParseGetDblArrayArg(args, LOOKUP_POINT_FLAG,LOOKUP_POINT_FLAG_LONG, mLookupPoint, flagSet ); 
@@ -363,11 +377,38 @@ MStatus mNeighbourInfo::parseArgs( const MArgList& args )
 			mLookupPointFlagSet = true;
 		}
         
-		if (!(mLookupPointFlagSet && mLookupRangeFlagSet))
+		if (!(mLookupPointFlagSet && mLookupRadiusFlagSet))
         {
 			USER_ERROR_CHECK(MS::kFailure,"mNeighbourInfo: if you are querying, you have to provide -lp|-lookupPoint AND -lr|-lookupRange flags as well as a neighbourInfo object!");
         }
                
+        // now check for the optional lookup angle parameters
+		status = argParseGetDblArrayArg(args, LOOKUP_ANGLE_FLAG,LOOKUP_ANGLE_FLAG_LONG, mLookupAngle, flagSet ); 
+		if (status.error()) return status;
+		if (flagSet)
+		{
+			flagNum -=2;
+			mLookupAngleFlagSet = true;
+		}
+        
+		status = argParseGetDblArrayArg(args, LOOKUP_DIRECTION_FLAG,LOOKUP_DIRECTION_FLAG_LONG, mLookupDirection, flagSet ); 
+		if (status.error()) return status;
+		if (flagSet)
+		{
+			flagNum -=2;
+			mLookupDirectionFlagSet = true;
+		}
+        
+        // angle flag set but not direction or vis-e-versa?
+		if ( (mLookupAngleFlagSet && (!mLookupDirectionFlagSet)) || ((!mLookupAngleFlagSet) && (mLookupDirectionFlagSet)) )
+        {
+			USER_ERROR_CHECK(MS::kFailure,"mNeighbourInfo: if you are querying and using the -ld|-lookupDirection and -la|-lookupAngle flags, you have to provide either both flags or none!");
+        }
+        else
+        	if (mLookupAngleFlagSet && mLookupDirectionFlagSet)
+	        	mLookupFOV = true;
+        
+        
         
 		// only one of the available query flags should be set
 		int index = -1;
@@ -631,9 +672,12 @@ MStatus mNeighbourInfo::doEdit( )
 
 //************************************************************************//
 // get all the neighbours in the kd tree for specified lookup info
-void mNeighbourInfo::getNeighboursInRange(const mNeighbourInfoStruct &myNI,
+// filter for field of view
+void mNeighbourInfo::getNeighboursInFOV(const mNeighbourInfoStruct &myNI,
 											 const MVector &lookupPoint,
-                                             const double lookupRange,
+                                             const double lookupRadius,
+											 const MVector &lookupDirection,                                             
+                                             double lookupAngle,
                                              MVectorArray &nearPoint,
                                              MDoubleArray &nearIndex,
                                              MDoubleArray &nearDistanceSqr,                                             
@@ -643,34 +687,131 @@ void mNeighbourInfo::getNeighboursInRange(const mNeighbourInfoStruct &myNI,
     nearIndex.clear();
     nearDistanceSqr.clear();
     
-    double lookupRangeSqr = lookupRange * lookupRange;
-    
+    double lookupRadiusSqr = lookupRadius * lookupRadius;  
+	
+    // half the lookup angle, as it referes to the full fov, not the angle around the
+    // lookup dir
+    lookupAngle /=2.0;
+
+	// find in kdtree using the lookup radius
 	triplet currentLookup = {lookupPoint.x, lookupPoint.y, lookupPoint.z};
-    
   	std::vector<triplet> nearestNodes;
-  	myNI.find_within_range(currentLookup, lookupRange, std::back_inserter(nearestNodes));
+  	myNI.find_within_range(currentLookup, lookupRadius, std::back_inserter(nearestNodes));
   
+  	// iterate over the result and make sure it is
+    // a) within the radius and
+    // b) within the angle
   	std::vector<triplet>::const_iterator nearestNodesIter = nearestNodes.begin();
-  	for (; nearestNodesIter != nearestNodes.end(); ++nearestNodesIter)
-    {
+    
+    // do we want to check for fov,
+ 	for (; nearestNodesIter != nearestNodes.end(); ++nearestNodesIter)
+   	{
     	triplet myNode = *nearestNodesIter;
         
-        MVector point(myNode.d[0],myNode.d[1],myNode.d[2]);
+   	    MVector point(myNode.d[0],myNode.d[1],myNode.d[2]);
 
-        // check if it is within the range distance       
-        double distSqr = distanceSqr(point, lookupPoint);
+        // check if it is within the radius distance       
+   	    double distSqr = distanceSqr(point, lookupPoint);
         
-        if (distSqr <= lookupRangeSqr)
-        {
-           	nearPoint.append(MVector(myNode.d[0],myNode.d[1],myNode.d[2]));
-        	nearIndex.append(myNode.index);
-            nearDistanceSqr.append(distSqr);
+        if (distSqr <= lookupRadiusSqr)
+   	    {
+       		// yes, check if it is within the angle, direction
+            MVector diff = point - lookupPoint;
+   	        double angle = diff.angle(lookupDirection);
+            
+       	    if (angle <= lookupAngle)
+           	{
+	           	nearPoint.append(MVector(myNode.d[0],myNode.d[1],myNode.d[2]));
+   		    	nearIndex.append(myNode.index);
+       		    nearDistanceSqr.append(distSqr);
+           	}
         }
-    }
-    
-//    cerr <<"\nall in range " << lookupPoint<<" , "<<lookupRange<<"\nnearPoint "<<nearPoint<<" nearIndex "<<nearIndex;
+   }
     
     nearCount = nearIndex.length();
+}
+
+//************************************************************************//
+// get all the neighbours in the kd tree for specified lookup info
+// filter for radius around
+void mNeighbourInfo::getNeighboursInRadius(const mNeighbourInfoStruct &myNI,
+											 const MVector &lookupPoint,
+                                             const double lookupRadius,
+                                             MVectorArray &nearPoint,
+                                             MDoubleArray &nearIndex,
+                                             MDoubleArray &nearDistanceSqr,                                             
+                                             int &nearCount) 
+{
+	nearPoint.clear();
+    nearIndex.clear();
+    nearDistanceSqr.clear();
+    
+    double lookupRadiusSqr = lookupRadius * lookupRadius;  
+
+	// find in kdtree using the lookup radius
+	triplet currentLookup = {lookupPoint.x, lookupPoint.y, lookupPoint.z};
+  	std::vector<triplet> nearestNodes;
+  	myNI.find_within_range(currentLookup, lookupRadius, std::back_inserter(nearestNodes));
+  
+  	// iterate over the result and make sure it is
+    // a) within the radius and
+    // b) within the angle
+  	std::vector<triplet>::const_iterator nearestNodesIter = nearestNodes.begin();
+    
+	// only check for radius
+	for (; nearestNodesIter != nearestNodes.end(); ++nearestNodesIter)
+    {
+	   	triplet myNode = *nearestNodesIter;
+       
+        MVector point(myNode.d[0],myNode.d[1],myNode.d[2]);
+
+	       // check if it is within the radius distance       
+        double distSqr = distanceSqr(point, lookupPoint);
+        
+	    if (distSqr <= lookupRadiusSqr)
+        {
+	       	nearPoint.append(MVector(myNode.d[0],myNode.d[1],myNode.d[2]));
+   		   	nearIndex.append(myNode.index);
+       	    nearDistanceSqr.append(distSqr);
+	    }
+    }
+            
+    nearCount = nearIndex.length();
+}
+
+//************************************************************************//
+// get all the neighbours dependent on setting
+void mNeighbourInfo::getNeighbours(	const mNeighbourInfoStruct &myNI,
+	       					const unsigned int incLP, const unsigned int incLR, 
+							const unsigned int incLD, const unsigned int incLA,         
+                            int &iterLP, int &iterLR,int &iterLD,int &iterLA,
+                            MVectorArray &nearPoint, MDoubleArray &nearIndex,
+                            MDoubleArray &nearDistanceSqr, int &nearCount)                           
+{
+	 // get all points in range
+     int indexLP = iterLP*3;
+     MVector currLookupPoint(mLookupPoint[indexLP],mLookupPoint[indexLP+1],mLookupPoint[indexLP+2]);
+     double currLookupRadius = mLookupRadius[iterLR];
+
+     if (mLookupFOV)
+     {
+         int indexLD = iterLD*3;
+         MVector currLookupDir(mLookupDirection[indexLD],mLookupDirection[indexLD+1],mLookupDirection[indexLD+2]);
+         double currLookupAngle = mLookupAngle[iterLA];        
+
+         getNeighboursInFOV(myNI,currLookupPoint,currLookupRadius,currLookupDir,currLookupAngle,nearPoint,nearIndex,nearDistanceSqr,nearCount);
+     
+         // update indices
+         iterLD += incLD;
+         iterLA += incLA;                      
+
+     }      
+     else
+         getNeighboursInRadius(myNI,currLookupPoint,currLookupRadius,nearPoint,nearIndex,nearDistanceSqr,nearCount);
+
+	 // update the indices
+     iterLP += incLP;
+	 iterLR += incLR;  
 }
 
 
@@ -679,6 +820,7 @@ void mNeighbourInfo::getNeighboursInRange(const mNeighbourInfoStruct &myNI,
 MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
                                               const unsigned int incLP,
                                               const unsigned int incLR, 
+											const unsigned int incLD, const unsigned int incLA,                                               
                                               const unsigned int count,
                                               MDoubleArray &result) 
 {
@@ -692,8 +834,8 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
     
     // iterate through all lookup points,
     // determine the nearest in the
-    int iterLP, iterLR;
-    iterLP=iterLR=0;
+    int iterLP, iterLR,iterLA, iterLD;
+    iterLP=iterLR=iterLD=iterLA=0;
     
     
         
@@ -706,14 +848,11 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
         for(int i=0;i<count;i++)
     	{
 
-			// get all points in range
-    	    int index = iterLP*3;
-        	MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-	        double currLookupRange = mLookupRange[iterLR];
-        
-		    int nearCount;    
-        
-	        getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                      iterLP, iterLR,iterLD, iterLA,
+                          nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                            
 	
 			if (nearCount == 1)
         	{
@@ -737,10 +876,7 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
     	    	if (nearestPointId > -1)
 	    	    	vecResult[i] = nearPoint[nearestPointId];
 	        }
-                
-        	// update the indices
-	        iterLP += incLP;
-    	    iterLR += incLR;        
+                      
         }
         
         result = vectorArrayToDoubleArray(vecResult);
@@ -753,15 +889,11 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
           
 	    for(int i=0;i<count;i++)
     	{
-			// get all points in range
-    	    int index = iterLP*3;
-        	MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-	        double currLookupRange = mLookupRange[iterLR];
-        
-		    int nearCount;    
-        
-	        getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                           iterLP, iterLR,iterLD, iterLA,
+                            nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                            
 			if (nearCount == 1)
     	    {
         		result[i] = nearIndex[0];
@@ -787,9 +919,6 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
 		    	    result[i] = nearIndex[nearestPointId];
         
 	        }
-    	    // update the indices
-        	iterLP += incLP;
-	        iterLR += incLR;        
 		}
     }
     
@@ -800,7 +929,8 @@ MStatus mNeighbourInfo::doQueryNearestInRange(const mNeighbourInfoStruct &myNI,
 // get the nearest point
 MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
                                               const unsigned int incLP,
-                                              const unsigned int incLR, 
+                                              const unsigned int incLR,
+											const unsigned int incLD, const unsigned int incLA,                                                
                                               const unsigned int count,
                                               MDoubleArray &result) 
 {
@@ -813,8 +943,8 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
  
     // iterate through all lookup points,
     // determine the nearest in the
-    int iterLP, iterLR;
-    iterLP=iterLR=0;
+    int iterLP, iterLR,iterLD,iterLA;
+    iterLP=iterLR=iterLD=iterLA=0;
     
 	if (mQueryPosition)
     {
@@ -826,15 +956,12 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
         for(int i=0;i<count;i++)
     	{
 
-			// get all points in range
-    	    int index = iterLP*3;
-        	MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-	        double currLookupRange = mLookupRange[iterLR];
-        
-		    int nearCount;    
-        
-	        getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-	
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                      iterLP, iterLR,iterLD, iterLA,
+                          nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                          
+                          	
 			if (nearCount == 1)
         	{
         		vecResult[i] = nearPoint[0];
@@ -859,9 +986,7 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
 	    	    	vecResult[i] = nearPoint[nearestPointId];
 	        }
                 
-        	// update the indices
-	        iterLP += incLP;
-    	    iterLR += incLR;        
+     
         }
         
         result = vectorArrayToDoubleArray(vecResult);
@@ -875,15 +1000,11 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
 	    for(int i=0;i<count;i++)
     	{
 
-			// get all points in range
-    	    int index = iterLP*3;
-        	MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-	        double currLookupRange = mLookupRange[iterLR];
-        
-		    int nearCount;    
-        
-	        getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-	
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                      iterLP, iterLR,iterLD, iterLA,
+                          nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                          	
 			if (nearCount == 1)
         	{
         		result[i] = nearIndex[0];
@@ -907,9 +1028,6 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
 	    	    	result[i] = nearIndex[nearestPointId];
 	        }
                 
-        	// update the indices
-	        iterLP += incLP;
-    	    iterLR += incLR;        
         }
         
     }
@@ -921,6 +1039,7 @@ MStatus mNeighbourInfo::doQueryFurthestInRange(const mNeighbourInfoStruct &myNI,
 // get a random point in the range
 MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
                                               const unsigned int incLP, const unsigned int incLR, 
+											const unsigned int incLD, const unsigned int incLA,                                               
                                               const unsigned int count, MDoubleArray &result) 
 {
 	MStatus status;
@@ -931,13 +1050,12 @@ MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
         
     // iterate through all lookup points,
     // determine the nearest in the
-    int iterLP, iterLR;
-    iterLP=iterLR=0;
+    int iterLP, iterLR, iterLD, iterLA;
+    iterLP=iterLR=iterLD=iterLA=0;
     
     result = MDoubleArray(count, -1.0);
           
 	// init the random number generator with a seed
-    // TODO: interface this seed
     srand(666);
     
 	if (mQueryPosition)
@@ -950,21 +1068,14 @@ MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
     	// only go for indices
 	    for(int i=0;i<count;i++)
 	    {
-
-			// get all points in range
-	    	int index = iterLP*3;
-    	    MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-        	double currLookupRange = mLookupRange[iterLR];
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                           iterLP, iterLR,iterLD, iterLA,
+                            nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
         
-		    int nearCount;    
-        
-    	    getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-
 			if (nearCount == 1)
-    	    {
-        		vecResult[i] = nearPoint[0];
-	        }
-    	    else
+    			vecResult[i] = nearPoint[0];
+	        else
 	        {
         
 		    	if (nearCount >0)
@@ -974,10 +1085,6 @@ MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
 		        }
         
     	   }
-	
-           // update the indices
-    	   iterLP += incLP;
-	   	   iterLR += incLR;        
 	    }
         
         result = vectorArrayToDoubleArray(vecResult);
@@ -989,19 +1096,13 @@ MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
 	    for(int i=0;i<count;i++)
 	    {
 
-			// get all points in range
-	    	int index = iterLP*3;
-    	    MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-        	double currLookupRange = mLookupRange[iterLR];
-        
-		    int nearCount;    
-        
-    	    getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-
+		    int nearCount;              
+    	   	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+	                           iterLP, iterLR,iterLD, iterLA,
+                            nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                
 			if (nearCount == 1)
-    	    {
         		result[i] = nearIndex[0];
-	        }
     	    else
 	        {
         
@@ -1012,32 +1113,30 @@ MStatus mNeighbourInfo::doQueryRandomInRange(const mNeighbourInfoStruct &myNI,
 		        }
         
     	   }
-	
-           // update the indices
-    	   iterLP += incLP;
-	   	   iterLR += incLR;        
-	    }
+	    } // indices
         
-    }
-    
+    } // else
    
     return status;
 }
+
+
 
 //************************************************************************//
 // get all in range
 MStatus mNeighbourInfo::doQueryAllInRange(const mNeighbourInfoStruct &myNI,
                                               const unsigned int incLP, const unsigned int incLR, 
+											const unsigned int incLD, const unsigned int incLA,                                               
                                               const unsigned int count, MDoubleArray &result) 
 {
 	MStatus status;
 
-	// are the parameter arrays bigger than 1 element? > ERROR
-    if ((incLP > 0) && (incLR >0))
+	// any of the parameter arrays bigger than 1 element? > ERROR
+    if ((incLP > 0) || (incLR >0) || (incLD >0) || (incLA >0))
     {
     	status = MS::kFailure;
 
-		MString error = "mNeighbourInfo: when querying for -air|-allInRange you can only provide a single element for -lp|-lookupPoint and -lr|-lookupRange!'";
+		MString error = "mNeighbourInfo: when querying for -air|-allInRange you can only provide a single element for -lp|-lookupPoint, -lr|-lookupRange, -ld|-lookupDirection and -la|-lookupAngle!";
         USER_ERROR_CHECK(status,error);    
     }
     
@@ -1046,10 +1145,19 @@ MStatus mNeighbourInfo::doQueryAllInRange(const mNeighbourInfoStruct &myNI,
               
 	// get all points in range
     MVector currLookupPoint(mLookupPoint[0],mLookupPoint[1],mLookupPoint[2]);
-    double currLookupRange = mLookupRange[0];
+    double currLookupRange = mLookupRadius[0];
         
-    int nearCount;    
-    getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
+    int nearCount;  
+  
+	if (mLookupFOV)
+    {
+    	MVector currLookupDir(mLookupDirection[0],mLookupDirection[1],mLookupDirection[2]);
+	    double currLookupAngle = mLookupAngle[0];        
+        
+        getNeighboursInFOV(myNI,currLookupPoint,currLookupRange,currLookupDir,currLookupAngle,nearPoint,nearIndex,nearDistanceSqr,nearCount);
+    }      
+    else
+	    getNeighboursInRadius(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
 
 	if (mQueryPosition)
         result = vectorArrayToDoubleArray(nearPoint);
@@ -1063,18 +1171,19 @@ MStatus mNeighbourInfo::doQueryAllInRange(const mNeighbourInfoStruct &myNI,
 // get number of points in range
 MStatus mNeighbourInfo::doQueryCountInRange(const mNeighbourInfoStruct &myNI,
                                               const unsigned int incLP, const unsigned int incLR, 
+												const unsigned int incLD, const unsigned int incLA,                                               
                                               const unsigned int count, MDoubleArray &result) 
 {
 	MStatus status;
 
 	MVectorArray nearPoint;
     MDoubleArray nearIndex;
-     MDoubleArray nearDistanceSqr; 
+    MDoubleArray nearDistanceSqr; 
         
     // iterate through all lookup points,
     // determine the nearest in the
-    int iterLP, iterLR;
-    iterLP=iterLR=0;
+    int iterLP, iterLR,iterLD, iterLA;
+    iterLP=iterLR=iterLD=iterLA =0;
     
     result = MDoubleArray(count, 0);
           
@@ -1088,19 +1197,14 @@ MStatus mNeighbourInfo::doQueryCountInRange(const mNeighbourInfoStruct &myNI,
 	for(int i=0;i<count;i++)
 	{
 		// get all points in range
-		int index = iterLP*3;
-        MVector currLookupPoint(mLookupPoint[index],mLookupPoint[index+1],mLookupPoint[index+2]);
-    	double currLookupRange = mLookupRange[iterLR];
-    
 	    int nearCount;    
-    
-        getNeighboursInRange(myNI,currLookupPoint,currLookupRange,nearPoint,nearIndex,nearDistanceSqr,nearCount);
-
+                
+       	getNeighbours(myNI,	incLP,  incLR, incLD,  incLA,         
+                            iterLP, iterLR,iterLD, iterLA,
+                            nearPoint, nearIndex, nearDistanceSqr, nearCount)  ; 
+                             
  		result[i] = nearCount;
 	
-       // update the indices
-       iterLP += incLP;
-	   iterLR += incLR;        
 	}
         
         
@@ -1121,14 +1225,28 @@ MStatus mNeighbourInfo::doQuery( )
     if (status.error()) return status;    
 
 	// check the size of the lookup info
-	unsigned int sizeLP, sizeLR, incLP, incLR, sizeResult;	
+	unsigned int sizeLP, sizeLR, sizeLA, sizeLD, incLP, incLR, incLA, incLD, sizeResult;	
     status = vecIsValid(mLookupPoint,sizeLP);
 	if (status.error()) return status;
     
-    sizeLR=mLookupRange.length();
+    sizeLR=mLookupRadius.length();
+
+	// do we only query for radius?
+	if (!mLookupFOV)
+	    status = twoArgCountsValid(sizeLR,sizeLP,incLR,incLP, sizeResult);
+    else
+    {
+    	// check additional flag arguments
+	    status = vecIsValid(mLookupDirection,sizeLD);
+		if (status.error()) return status;
         
-    status = twoArgCountsValid(sizeLR,sizeLP,incLR,incLP, sizeResult);
+		sizeLA = mLookupAngle.length();   
+        
+        status = fourArgCountsValid(sizeLR,sizeLP,sizeLD,sizeLA,incLR,incLP,incLD,incLA, sizeResult);
+    }
+    
     if (status.error()) return status;                              
+
 
 	// do the kd tree lookup   
 	// query the object
@@ -1136,11 +1254,11 @@ MStatus mNeighbourInfo::doQuery( )
 
 	switch (mQueryAction)
 	{
-		case CMD_QUERY_NEAREST_IN_RANGE: 		status = doQueryNearestInRange(myNI,incLP,incLR,sizeResult,result); break;
-		case CMD_QUERY_FURTHEST_IN_RANGE:		status = doQueryFurthestInRange(myNI,incLP,incLR,sizeResult,result); break;
-		case CMD_QUERY_RANDOM_IN_RANGE_FLAG:	status = doQueryRandomInRange(myNI,incLP,incLR,sizeResult,result); break;
-		case CMD_QUERY_ALL_IN_RANGE_FLAG:		status = doQueryAllInRange(myNI,incLP,incLR,sizeResult,result); break;
-		case CMD_QUERY_COUNT_IN_RANGE_FLAG:		status = doQueryCountInRange(myNI,incLP,incLR,sizeResult,result); break;        
+		case CMD_QUERY_NEAREST_IN_RANGE: 		status = doQueryNearestInRange(	myNI,incLP,incLR,incLD,incLA,sizeResult,result); break;
+		case CMD_QUERY_FURTHEST_IN_RANGE:		status = doQueryFurthestInRange(myNI,incLP,incLR,incLD,incLA,sizeResult,result); break;
+		case CMD_QUERY_RANDOM_IN_RANGE_FLAG:	status = doQueryRandomInRange(	myNI,incLP,incLR,incLD,incLA,sizeResult,result); break;
+		case CMD_QUERY_ALL_IN_RANGE_FLAG:		status = doQueryAllInRange(		myNI,incLP,incLR,incLD,incLA,sizeResult,result); break;
+		case CMD_QUERY_COUNT_IN_RANGE_FLAG:		status = doQueryCountInRange(	myNI,incLP,incLR,incLD,incLA,sizeResult,result); break;        
 	}
 
 	if (status.error()) 
@@ -1186,3 +1304,4 @@ MStatus mNeighbourInfo::doIt( const MArgList& args )
 
 
 } // end namespace
+

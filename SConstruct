@@ -4,7 +4,7 @@ user = vfx.build.execute('whoami')['output']
 host = vfx.build.execute('hostname')['output']
 
 project = "melfunctions"
-version = "0.4.0"
+version = "0.5.0"
 
 # checks
 maya_location = os.getenv('MAYA_LOCATION')
@@ -29,7 +29,8 @@ mayaplugin_cppsrcs = [  'src/plugin.cpp',
                         'src/mNoiseCmd.cpp',     
                         
                         'src/mAttrCmd.cpp',     
-                        
+
+                        'src/mAnimCurveInfoCmd.cpp',                                                     
                         'src/m2dShaderInfoCmd.cpp',                             
                         'src/mNeighbourInfoCmd.cpp',     
                         

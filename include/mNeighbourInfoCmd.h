@@ -34,8 +34,14 @@ static const char* HELP_FLAG = "h";
 static const char* HELP_FLAG_LONG = "help";
 
 // things that can be edited and queried
-static const char* LOOKUP_RANGE_FLAG = "lr";
-static const char* LOOKUP_RANGE_FLAG_LONG = "lookupRange";
+static const char* LOOKUP_RADIUS_FLAG = "lr";
+static const char* LOOKUP_RADIUS_FLAG_LONG = "lookupRadius";
+
+static const char* LOOKUP_ANGLE_FLAG = "la";
+static const char* LOOKUP_ANGLE_FLAG_LONG = "lookupAngle";
+
+static const char* LOOKUP_DIRECTION_FLAG = "ld";
+static const char* LOOKUP_DIRECTION_FLAG_LONG = "lookupDirection";
 
 static const char* LOOKUP_POINT_FLAG = "lp";
 static const char* LOOKUP_POINT_FLAG_LONG = "lookupPoint";
@@ -159,24 +165,42 @@ class mNeighbourInfo : public MPxCommand
 			MStatus		getNeighbourInfoObject(const MString name, mNeighbourInfoStruct &myNIObject);
 			MStatus		fillNeighbourInfoObject(mNeighbourInfoStruct &myNIObject, MDoubleArray points);            
             
-			void 		getNeighboursInRange(const mNeighbourInfoStruct &myNI,
+			void 		getNeighboursInFOV (const mNeighbourInfoStruct &myNI,
 											 const MVector &lookupPoint,
-                                             const double lookupRange,
+                                             const double lookupRadius,
+   											 const MVector &lookupDirection,                                                                                         
+                                             const double lookupAngle,
                                              MVectorArray &nearPoint,
                                              MDoubleArray &nearIndex,
                                              MDoubleArray &nearDistance,
                                              int &count) ;
+
+			void 		getNeighboursInRadius (const mNeighbourInfoStruct &myNI,
+											 const MVector &lookupPoint,
+                                             const double lookupRadius,
+                                             MVectorArray &nearPoint,
+                                             MDoubleArray &nearIndex,
+                                             MDoubleArray &nearDistance,
+                                             int &count) ;
+
+			void	getNeighbours(	const mNeighbourInfoStruct &myNI,
+	       					const unsigned int incLP, const unsigned int incLR, 
+							const unsigned int incLD, const unsigned int incLA,         
+                            int &iterLP, int &iterLR,int &iterLD,int &iterLA,
+                            MVectorArray &nearPoint, MDoubleArray &nearIndex,
+                            MDoubleArray &nearDistanceSqr, int &nearCount)  ;       
+                                                                         
                                                          
             MStatus		doQueryNearestInRange(const mNeighbourInfoStruct &myNI, const unsigned int incLP, 
-            								  const unsigned int incLR, const unsigned int count,MDoubleArray &result);
+            								  const unsigned int incLR, const unsigned int incLD, const unsigned int incLA, const unsigned int count,MDoubleArray &result);
             MStatus		doQueryFurthestInRange(const mNeighbourInfoStruct &myNI, const unsigned int incLP, 
-            								  const unsigned int incLR, const unsigned int count,MDoubleArray &result);
+            								  const unsigned int incLR, const unsigned int incLD, const unsigned int incLA, const unsigned int count,MDoubleArray &result);
             MStatus		doQueryRandomInRange(const mNeighbourInfoStruct &myNI, const unsigned int incLP, 
-            								  const unsigned int incLR, const unsigned int count,MDoubleArray &result);
+            								  const unsigned int incLR, const unsigned int incLD, const unsigned int incLA, const unsigned int count,MDoubleArray &result);
             MStatus		doQueryAllInRange(const mNeighbourInfoStruct &myNI, const unsigned int incLP, 
-            								  const unsigned int incLR, const unsigned int count,MDoubleArray &result);
+            								  const unsigned int incLR, const unsigned int incLD, const unsigned int incLA, const unsigned int count,MDoubleArray &result);
             MStatus		doQueryCountInRange(const mNeighbourInfoStruct &myNI, const unsigned int incLP, 
-            								  const unsigned int incLR, const unsigned int count,MDoubleArray &result);
+            								  const unsigned int incLR, const unsigned int incLD, const unsigned int incLA, const unsigned int count,MDoubleArray &result);
 
 
             MStatus		deleteNeighbourInfoObject();
@@ -193,12 +217,19 @@ class mNeighbourInfo : public MPxCommand
             bool            mHelpFlagSet;
             MString			mNIObject;
 
-            bool            mLookupRangeFlagSet;            
-            MDoubleArray    mLookupRange;
+            bool            mLookupRadiusFlagSet;            
+            MDoubleArray    mLookupRadius;
             
             bool            mLookupPointFlagSet;
             MDoubleArray    mLookupPoint;            
             
+            bool            mLookupFOV;
+            bool            mLookupAngleFlagSet;
+            MDoubleArray    mLookupAngle;            
+
+            bool            mLookupDirectionFlagSet;
+            MDoubleArray    mLookupDirection;            
+
             bool            mNeighbourPointFlagSet;
             MDoubleArray    mNeighbourPoint;     
 
