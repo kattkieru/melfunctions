@@ -25,5 +25,15 @@ DECLARE_COMMAND(mSeed)
 DECLARE_COMMAND(mDblRand)
 DECLARE_COMMAND(mDblGauss)
 
+DECLARE_COMMAND(mDbl1dNoise)
+DECLARE_COMMAND(mDbl2dNoise)
+DECLARE_COMMAND(mDbl3dNoise)
+DECLARE_COMMAND(mDbl4dNoise)
+
+DECLARE_COMMAND(mVec3dNoise)
+
+
+
 }//end namespace
 #endif
+

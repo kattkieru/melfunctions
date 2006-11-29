@@ -22,6 +22,7 @@ namespace melfunctions
 // wrapped in a macro, check out "helperMacros.h"
 
 DECLARE_COMMAND(mVecCreate)
+DECLARE_COMMAND(mVecCreateFromComponents)
 DECLARE_COMMAND(mVecSize)
 DECLARE_COMMAND(mVecAppend)
 DECLARE_COMMAND(mVecGet)

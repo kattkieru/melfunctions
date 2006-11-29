@@ -854,6 +854,48 @@ MStatus getArgDblDblDbl(const MArgList& args, MDoubleArray  & dblA,MDoubleArray 
     return MS::kSuccess;
 }
 
+MStatus getArgDblDblDblDbl(const MArgList& args, 
+								MDoubleArray  & dblA,
+                                MDoubleArray  & dblB,
+                                MDoubleArray  & dblC, 
+                                MDoubleArray  & dblD, 
+                                unsigned int &incA,
+                                unsigned int &incB, 
+                                unsigned int &incC,
+                                unsigned int &incD,
+                                unsigned int &count)
+{
+	// check the argument count
+	MStatus stat = argCountCheck(args,4); 
+	ERROR_FAIL(stat);
+	
+	// get dbl arrays from the arguments
+	stat = getDoubleArrayArg(args,0,dblA);
+	ERROR_FAIL(stat);
+
+	stat = getDoubleArrayArg(args,1,dblB);
+	ERROR_FAIL(stat);
+
+	stat = getDoubleArrayArg(args,2,dblC);
+	ERROR_FAIL(stat);
+
+	stat = getDoubleArrayArg(args,3,dblD);
+	ERROR_FAIL(stat);
+
+	// check if the arguments are valid vector arrays
+	unsigned int numA, numB, numC, numD;
+	numA = dblA.length();
+	numB = dblB.length();
+	numC = dblC.length();
+	numD = dblD.length();
+
+	// validate the counts and get iterators increasors
+	stat = fourArgCountsValid(numA,numB,numC,numD,incA,incB,incC,incD,count);
+	ERROR_FAIL(stat);
+
+    return MS::kSuccess;
+}
+
 MStatus getArgDblDblDblDblDbl(const MArgList& args, 
 								MDoubleArray  & dblA,
                                 MDoubleArray  & dblB,

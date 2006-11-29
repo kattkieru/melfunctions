@@ -26,6 +26,7 @@
 
 #include "../include/mHelperFunctions.h"
 #include "../include/mNoiseCmd.h"
+#include "../include/Noise.h"
 
 namespace melfunctions
 {
@@ -281,6 +282,400 @@ MStatus mDblGauss::doIt( const MArgList& args )
 	}
 }
 
+//************************************************************************************************//
+/*
+   Function: mDbl1dNoise
 
+   Create Improved Perlin noise for single values in an array
+
+   Parameters:
+
+		$dblArrayA - the double array
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mDbl1dNoise(float[] $dblArrayA);
+#undef mel
+
+CREATOR(mDbl1dNoise)
+MStatus mDbl1dNoise::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA;
+    unsigned int count;
+	MStatus stat = getArgDbl(args, dblA, count);
+	ERROR_FAIL(stat);
+    
+	// do the actual job
+	Noise noiseGen;
+    
+	for (unsigned int i=0;i<dblA.length();i++)
+	{
+        dblA[i] = noiseGen.improvedPerlin1dU(float(dblA[i]));
+	}
+
+	setResult(dblA);
+	return MS::kSuccess;
+}
+
+//************************************************************************************************//
+/*
+   Function: mDbl2dNoise
+
+   Create Improved Perlin noise in 2 dimensions
+
+   Parameters:
+
+		either provide
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        
+        or
+        
+        $uvArray - single uv array with the sample values
+        
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mDbl2dNoise(float[] $dblArrayA),float[] $dblArrayB);
+#undef mel
+
+CREATOR(mDbl2dNoise)
+MStatus mDbl2dNoise::doIt( const MArgList& args )
+{
+	if (args.length() == 1)
+	{
+		// get the arguments
+    	MDoubleArray dblA;
+	    unsigned int count;
+		MStatus stat = getArgUV(args, dblA, count);
+		ERROR_FAIL(stat);
+    
+		// do the job
+		MDoubleArray result = MDoubleArray(count);		
+
+        Noise noiseGen;
+        for(int i=0;i<count;i++)
+	    	result[i] = noiseGen.improvedPerlin2dU(float(dblA[i*ELEMENTS_UV]), float(dblA[i*ELEMENTS_UV+1]));
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 2)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB;
+    	unsigned int incA, incB, count;
+		MStatus stat = getArgDblDbl(args, dblA, dblB, incA, incB, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB;
+		iterA = iterB = 0;
+
+		MDoubleArray result(count);
+		Noise noiseGen;
+
+		for (unsigned int i=0;i<count;i++)
+		{
+        	result[i] = noiseGen.improvedPerlin2dU(float(dblA[iterA]), float(dblB[iterB]));
+
+			iterA += incA;
+			iterB += incB;
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mDbl2dNoise: wrong number of arguments, should be 1 uvArray or 2 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
+
+//************************************************************************************************//
+/*
+   Function: mDbl3dNoise
+
+   Create Improved Perlin noise in 3 dimensions
+
+   Parameters:
+
+		either provide
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        $dblArrayC - the double array with sample values for dimension 3
+        
+        or
+        
+        $vecArray - single vector array with the sample values
+        
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mDbl3dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC);
+#undef mel
+
+CREATOR(mDbl3dNoise)
+MStatus mDbl3dNoise::doIt( const MArgList& args )
+{
+	if (args.length() == 1)
+	{
+    	// vector array
+		// get the arguments
+    	MDoubleArray dblA;
+	    unsigned int count;
+		MStatus stat = getArgVec(args, dblA, count);
+		ERROR_FAIL(stat);
+    
+		// do the job
+		MDoubleArray result = MDoubleArray(count);		
+
+        Noise noiseGen;
+        for(int i=0;i<count;i++)
+        {
+        	int id = ELEMENTS_VEC *i;
+	    	result[i] = noiseGen.improvedPerlin3dU(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]));
+        }
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 3)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB, dblC;
+    	unsigned int incA, incB, incC, count;
+		MStatus stat = getArgDblDblDbl(args, dblA, dblB, dblC, incA, incB, incC, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB, iterC;
+		iterA = iterB = iterC = 0;
+
+		MDoubleArray result(count);
+		Noise noiseGen;
+
+		for (unsigned int i=0;i<count;i++)
+		{
+        	result[i] = noiseGen.improvedPerlin3dU(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]));
+
+			iterA += incA;
+			iterB += incB;
+			iterC += incC;            
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mDbl3dNoise: wrong number of arguments, should be 1 vecArray or 3 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
+
+//************************************************************************************************//
+/*
+   Function: mDbl4dNoise
+
+   Create Improved Perlin noise in 4 dimensions
+
+   Parameters:
+
+		either provide
+        
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        $dblArrayC - the double array with sample values for dimension 3
+        $dblArrayT - the double array with sample values for dimension 4
+        
+        or
+        
+        $vecArray - single vector array with the sample values
+        $dblArrayT - the double array with sample values for dimension 4        
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mDbl4dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC,float[] $dblArrayT);
+#undef mel
+
+CREATOR(mDbl4dNoise)
+MStatus mDbl4dNoise::doIt( const MArgList& args )
+{
+	if (args.length() == 2)
+	{
+    	// vector array and single value
+		// get the arguments
+    	MDoubleArray dblA,dblD;
+	    unsigned int iterA, iterD, incA,incD,count;
+        iterA=iterD=0;
+		MStatus stat = getArgVecDbl(args, dblA,dblD,incA,incD, count);
+		ERROR_FAIL(stat);
+    
+		// do the job
+		MDoubleArray result = MDoubleArray(count);		
+
+        Noise noiseGen;
+        for(int i=0;i<count;i++)
+        {
+        	int id = ELEMENTS_VEC *iterA;
+	    	result[i] = noiseGen.improvedPerlin4dU(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]),float(dblD[iterD]));
+            
+            iterD += incD;
+            iterA += incA;
+        }
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 4)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB, dblC, dblD;
+    	unsigned int incA, incB, incC, incD, count;
+		MStatus stat = getArgDblDblDblDbl(args, dblA, dblB, dblC, dblD, incA, incB, incC, incD, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB, iterC, iterD;
+		iterA = iterB = iterC = iterD = 0;
+
+		MDoubleArray result(count);
+		Noise noiseGen;
+
+		for (unsigned int i=0;i<count;i++)
+		{
+        	result[i] = noiseGen.improvedPerlin4dU(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]),  float(dblD[iterD]));
+
+			iterA += incA;
+			iterB += incB;
+			iterC += incC;            
+			iterD += incD;                        
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mDbl4dNoise: wrong number of arguments, should be 1 vecArray and 1 dblArray or 4 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
+
+//************************************************************************************************//
+/*
+   Function: mVec3dNoise
+
+   Create Improved Perlin noise vector 
+
+   Parameters:
+
+		either provide
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        $dblArrayC - the double array with sample values for dimension 3
+        
+        or
+        
+        $vecArray - single vector array with the sample values
+        
+
+   Returns:
+
+		noise vector as a float[]
+
+*/
+#define mel mVec3dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC);
+#undef mel
+
+CREATOR(mVec3dNoise)
+MStatus mVec3dNoise::doIt( const MArgList& args )
+{
+	if (args.length() == 1)
+	{
+    	// vector array
+		// get the arguments
+    	MDoubleArray dblA;
+	    unsigned int count;
+		MStatus stat = getArgVec(args, dblA, count);
+		ERROR_FAIL(stat);
+    
+		// do the job
+		MDoubleArray result = MDoubleArray(count*ELEMENTS_VEC);		
+
+        Noise noiseGen;
+        float v[3];
+        
+        for(int i=0;i<count;i++)
+        {
+        	int id = ELEMENTS_VEC *i;
+            noiseGen.noiseVector(float (dblA[id]), float(dblA[id+1]),float(dblA[id+2]), NOISE_IMPROVED_PERLIN, v);
+			result[id] = v[0];
+			result[id+1] = v[1];
+			result[id+2] = v[2];                        
+        }
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 3)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB, dblC;
+    	unsigned int incA, incB, incC, count;
+		MStatus stat = getArgDblDblDbl(args, dblA, dblB, dblC, incA, incB, incC, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB, iterC;
+		iterA = iterB = iterC = 0;
+
+		MDoubleArray result = MDoubleArray(count*ELEMENTS_VEC);	
+		Noise noiseGen;
+		float v[3];
+         
+		for (unsigned int i=0;i<count;i++)
+		{
+        	noiseGen.noiseVector(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]),NOISE_IMPROVED_PERLIN, v);
+			
+            int id = ELEMENTS_VEC *i;
+            
+            result[id] = v[0];
+			result[id+1] = v[1];
+			result[id+2] = v[2];
+            
+			iterA += incA;
+			iterB += incB;
+			iterC += incC;            
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mVec3dNoise: wrong number of arguments, should be 1 vecArray or 3 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
 
 }// namespace

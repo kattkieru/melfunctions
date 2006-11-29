@@ -113,6 +113,58 @@ MStatus mVecCreate::doIt( const MArgList& args )
 }
 
 /*
+   Function: mVecCreateFromComponents
+   Create a vector array from individual components
+
+   Parameters:
+
+		$x[] - x component
+		$y[] - y component
+		$z[] - z component
+
+   Returns:
+
+      The vector array  as a float array of its elements
+
+*/
+#define mel mVecCreateFromComponents(int $count, float $template[3]);
+#undef mel
+
+CREATOR(mVecCreateFromComponents)
+MStatus mVecCreateFromComponents::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA, dblB,dblC;
+    unsigned int incA, incB, incC, count;
+	MStatus stat = getArgDblDblDbl(args, dblA, dblB, dblC, incA, incB, incC, count);
+	ERROR_FAIL(stat);
+
+	// do the actual job
+	unsigned int iterA, iterB, iterC;
+	iterA = iterB = iterC = 0;
+	
+	MDoubleArray result(count*ELEMENTS_VEC,0.0);
+
+	for (unsigned int i=0; i<count; i++)
+	{
+    	int id = i * ELEMENTS_VEC;
+    	result[id] = dblA[iterA];
+        result[id+1] = dblB[iterB];
+		result[id+2] = dblC[iterC];        
+        
+		iterA += incA;
+		iterB += incB;
+		iterC += incC;        	
+  	}
+
+	setResult(result);
+	return MS::kSuccess;
+
+}
+
+
+
+/*
    Function: mVecSize
    Get number of vectors in a vector array
 

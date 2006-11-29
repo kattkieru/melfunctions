@@ -44,9 +44,9 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Carsten Kolve", "0.5", "Any");
+	MFnPlugin plugin( obj, "Carsten Kolve", "0.6", "Any");
 	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
-	MGlobal::displayInfo("melfunctions 0.5 (c) Carsten Kolve, 2006");
+	MGlobal::displayInfo("melfunctions 0.6 (c) Carsten Kolve, 2006");
     MGlobal::displayInfo("Contributions to this plugin (c) Rising Sun Pictures PTY Ltd, www.rsp.com.au");
 	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider donating to a charity!");
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");
@@ -97,6 +97,7 @@ MStatus initializePlugin( MObject obj )
 
 	// vector management
     REGISTER_COMMAND(melfunctions,mVecCreate)
+	REGISTER_COMMAND(melfunctions,mVecCreateFromComponents)    
     REGISTER_COMMAND(melfunctions,mVecSize)
     REGISTER_COMMAND(melfunctions,mVecAppend)
     REGISTER_COMMAND(melfunctions,mVecGet)
@@ -216,7 +217,12 @@ MStatus initializePlugin( MObject obj )
 	// noise
 	REGISTER_COMMAND(melfunctions,mSeed)    
 	REGISTER_COMMAND(melfunctions,mDblRand)
-	REGISTER_COMMAND(melfunctions,mDblGauss)    
+	REGISTER_COMMAND(melfunctions,mDblGauss)  
+    REGISTER_COMMAND(melfunctions,mDbl1dNoise ) 
+    REGISTER_COMMAND(melfunctions,mDbl2dNoise ) 
+    REGISTER_COMMAND(melfunctions,mDbl3dNoise )         
+    REGISTER_COMMAND(melfunctions,mDbl4dNoise )             
+    REGISTER_COMMAND(melfunctions,mVec3dNoise )                 
     
    	// attributes
     REGISTER_COMMAND(melfunctions,mDblSetAttr)    
@@ -287,6 +293,7 @@ MStatus uninitializePlugin( MObject obj )
 
 	// vector management
     DEREGISTER_COMMAND(mVecCreate)
+	DEREGISTER_COMMAND(mVecCreateFromComponents)        
     DEREGISTER_COMMAND(mVecSize)
     DEREGISTER_COMMAND(mVecAppend)
     DEREGISTER_COMMAND(mVecGet)
@@ -407,7 +414,13 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mSeed)    
 	DEREGISTER_COMMAND(mDblRand)
 	DEREGISTER_COMMAND(mDblGauss)        
-
+    DEREGISTER_COMMAND(mDbl1dNoise )
+    DEREGISTER_COMMAND(mDbl2dNoise )
+	DEREGISTER_COMMAND(mDbl3dNoise )
+ 	DEREGISTER_COMMAND(mDbl4dNoise )      
+          
+ 	DEREGISTER_COMMAND(mVec3dNoise )                
+    
 	// attributes
     DEREGISTER_COMMAND(mDblSetAttr)    
     DEREGISTER_COMMAND(mVecSetAttr)        

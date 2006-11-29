@@ -119,6 +119,7 @@ MStatus fourArgCountsValid(const unsigned int &numA,const unsigned int& numB,con
 MStatus getArgDbl(const MArgList& args, MDoubleArray  & dblA,  unsigned int &count);
 MStatus getArgDblDbl(const MArgList& args, MDoubleArray  & dblA,MDoubleArray  & dblB, unsigned int &incA,unsigned int &incB, unsigned int &count);
 MStatus getArgDblDblDbl(const MArgList& args, MDoubleArray  & dblA,MDoubleArray  & dblB,MDoubleArray  & dblC, unsigned int &incA,unsigned int &incB, unsigned int &incC,unsigned int &count);
+MStatus getArgDblDblDblDbl(const MArgList& args, MDoubleArray  & dblA, MDoubleArray  & dblB, MDoubleArray  & dblC,  MDoubleArray  & dblD,  unsigned int &incA, unsigned int &incB,  unsigned int &incC, unsigned int &incD, unsigned int &count);
 MStatus getArgDblDblDblDblDbl(const MArgList& args, MDoubleArray  & dblA,MDoubleArray  & dblB,MDoubleArray  & dblC, MDoubleArray  & dblD, MDoubleArray  & dblE, unsigned int &incA,unsigned int &incB, unsigned int &incC,unsigned int &incD,unsigned int &incE,unsigned int &count);
 
 MStatus getArgUV(const MArgList& args, MDoubleArray  & uvA,  unsigned int &count);
