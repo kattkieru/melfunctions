@@ -90,10 +90,10 @@ MStatus mSeed::doIt( const MArgList& args )
 
    Parameters:
 
-		none - return a single random value between 0 and 1
-		or
-		count - return count random doubles between 0 and 1
-		or
+		none - return a single random value between 0 and 1   
+        OR - .
+		count - return count random doubles between 0 and 1   OR
+        OR - .
 		count - the number of double elements to create between min and max
 		min - minimum random value
 		max - maximum random value
@@ -190,9 +190,9 @@ MStatus mDblRand::doIt( const MArgList& args )
    Parameters:
 
 		none - return a single random gauss number with mean 0 and standard deviation 1
-		or
+        OR - .
 		count - return count random gauss number with mean 0 and standard deviation 1
-		or
+        OR - .
 		count - the number of double elements to create with mean and standard deviation as desribed in the following parameters
 		mean - mean value the gauss distribution is centred around
 		deviation - standard deviation around the mean
@@ -329,11 +329,11 @@ MStatus mDbl1dNoise::doIt( const MArgList& args )
 
    Parameters:
 
-		either provide
+		
 		$dblArrayA - the double array with sample values for dimension 1
         $dblArrayB - the double array with sample values for dimension 2
         
-        or
+        OR - .
         
         $uvArray - single uv array with the sample values
         
@@ -343,7 +343,7 @@ MStatus mDbl1dNoise::doIt( const MArgList& args )
 		noise values as a float[]
 
 */
-#define mel mDbl2dNoise(float[] $dblArrayA),float[] $dblArrayB);
+#define mel mDbl2dNoise(float[] $dblArrayA,float[] $dblArrayB);
 #undef mel
 
 CREATOR(mDbl2dNoise)
@@ -409,12 +409,12 @@ MStatus mDbl2dNoise::doIt( const MArgList& args )
 
    Parameters:
 
-		either provide
+
 		$dblArrayA - the double array with sample values for dimension 1
         $dblArrayB - the double array with sample values for dimension 2
         $dblArrayC - the double array with sample values for dimension 3
         
-        or
+        OR - .
         
         $vecArray - single vector array with the sample values
         
@@ -424,7 +424,7 @@ MStatus mDbl2dNoise::doIt( const MArgList& args )
 		noise values as a float[]
 
 */
-#define mel mDbl3dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC);
+#define mel mDbl3dNoise(float[] $dblArrayA,float[] $dblArrayB,float[] $dblArrayC);
 #undef mel
 
 CREATOR(mDbl3dNoise)
@@ -495,14 +495,13 @@ MStatus mDbl3dNoise::doIt( const MArgList& args )
 
    Parameters:
 
-		either provide
         
 		$dblArrayA - the double array with sample values for dimension 1
         $dblArrayB - the double array with sample values for dimension 2
         $dblArrayC - the double array with sample values for dimension 3
         $dblArrayT - the double array with sample values for dimension 4
         
-        or
+        OR - .
         
         $vecArray - single vector array with the sample values
         $dblArrayT - the double array with sample values for dimension 4        
@@ -512,7 +511,7 @@ MStatus mDbl3dNoise::doIt( const MArgList& args )
 		noise values as a float[]
 
 */
-#define mel mDbl4dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC,float[] $dblArrayT);
+#define mel mDbl4dNoise(float[] $dblArrayA,float[] $dblArrayB,float[] $dblArrayC,float[] $dblArrayT);
 #undef mel
 
 CREATOR(mDbl4dNoise)
@@ -588,12 +587,12 @@ MStatus mDbl4dNoise::doIt( const MArgList& args )
 
    Parameters:
 
-		either provide
+
 		$dblArrayA - the double array with sample values for dimension 1
         $dblArrayB - the double array with sample values for dimension 2
         $dblArrayC - the double array with sample values for dimension 3
         
-        or
+        OR - .
         
         $vecArray - single vector array with the sample values
         
@@ -603,7 +602,7 @@ MStatus mDbl4dNoise::doIt( const MArgList& args )
 		noise vector as a float[]
 
 */
-#define mel mVec3dNoise(float[] $dblArrayA),float[] $dblArrayB,float[] $dblArrayC);
+#define mel mVec3dNoise(float[] $dblArrayA,float[] $dblArrayB,float[] $dblArrayC);
 #undef mel
 
 CREATOR(mVec3dNoise)
