@@ -44,9 +44,9 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Carsten Kolve", "0.6", "Any");
+	MFnPlugin plugin( obj, "Carsten Kolve", "0.7", "Any");
 	MGlobal::displayInfo("----------------------------------------------------------------------------------------");
-	MGlobal::displayInfo("melfunctions 0.6 (c) Carsten Kolve, 2006");
+	MGlobal::displayInfo("melfunctions 0.7 (c) Carsten Kolve, 2006");
     MGlobal::displayInfo("Contributions to this plugin (c) Rising Sun Pictures PTY Ltd, www.rsp.com.au");
 	MGlobal::displayInfo("Licensed under the GPL, if you find this useful please consider donating to a charity!");
 	MGlobal::displayInfo("Visit www.kolve.com for news, updates and information on the licenses!");

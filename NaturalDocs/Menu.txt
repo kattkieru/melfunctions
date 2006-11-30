@@ -1,7 +1,7 @@
 Format: 1.35
 
 
-Title: melfunctions 0.5
+Title: melfunctions 0.6
 
 # You can also add a sub-title to your menu like this:
 # SubTitle: [subtitle]
@@ -55,7 +55,7 @@ Group: Matrix Arrays  {
 
 Group: Noise & Random  {
 
-   File: Random  (no auto-title, mNoiseCmd.cpp)
+   File: Random & Noise  (no auto-title, mNoiseCmd.cpp)
    }  # Group: Noise & Random
 
 Group: Node Attributes  {

@@ -4,7 +4,7 @@ user = vfx.build.execute('whoami')['output']
 host = vfx.build.execute('hostname')['output']
 
 project = "melfunctions"
-version = "0.6.0"
+version = "0.7.0"
 
 # checks
 maya_location = os.getenv('MAYA_LOCATION')

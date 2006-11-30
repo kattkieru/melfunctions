@@ -53,6 +53,7 @@ Parameters:
                                   or -1 if none is found. (doubleArray)       
  -air|-allInRange        - [Q]     Specify an index  of a lookup point (int) and it will return an array of indices of neighbour points
                                   in the lookup range or -1 if none is found. (doubleArray)  
+ -xcs|-excludeSame        - [Q]   if the lookupPoint is part of the result, exclude it (useful if the lookupPoints and neighbourPoints are the same)
  -cir|-countInRange      - [Q]     Returns for each lookup point the number of neighbour point in the lookup range (doubleArray)
  -pos|-position         -  [Q]     Use this option when querying to return the positions of the neighbours instead of their indices
    -l|-list             -  [C]     Returns all mNeighbourInfo object names (as a stringArray)
@@ -130,6 +131,7 @@ mNeighbourInfo::mNeighbourInfo()
     mCreateAction = CMD_CREATE_CREATE;
 
     mQueryPosition = false;
+    mExcludeSame = false;    
 	mHelpFlagSet = false;    
     mLookupRadiusFlagSet = false;            
     mLookupPointFlagSet = false;            
@@ -167,6 +169,7 @@ void mNeighbourInfo::help() const
     help += "//\t -air|-allInRange         [Q]     Specify an index  of a lookup point (int) and it will return an array of indices of neighbour points\n";
     help += "//\t                                  in the lookup range or -1 if none is found. (doubleArray)\n";  
 	help += "//\t -cir|-countInRange       [Q]     Returns for each lookup point the number of neighbour point in the lookup range (doubleArray)\n";
+	help += "//\t -xcs|-excludeSame        [Q]     If the lookupPoint is part of the result, exclude it (useful if the lookupPoints and neighbourPoints are the same)\n";
 	help += "//\t -pos|-position           [Q]     Use this option when querying to return the positions of the neighbours instead of their indices\n";
     help += "//\t   -l|-list               [C]     Returns all mNeighbourInfo object names (as a stringArray)\n";
     help += "//\t   -d|-delete             [E]     Delete the specified mNeighbourInfo object.\n";    
@@ -437,6 +440,12 @@ MStatus mNeighbourInfo::parseArgs( const MArgList& args )
 			mQueryPosition = true;
 		}
 
+        // is the exclude same flag set
+		if (argParseIsFlagSet(args,EXCLUDE_SAME_FLAG,EXCLUDE_SAME_FLAG_LONG,index)) 
+		{
+			flagNum --;
+			mExcludeSame = true;
+		}
         
         // need a neighbour info object
         status = argParseGetObjectStringArg(args,mNIObject);
@@ -710,6 +719,10 @@ void mNeighbourInfo::getNeighboursInFOV(const mNeighbourInfoStruct &myNI,
         
    	    MVector point(myNode.d[0],myNode.d[1],myNode.d[2]);
 
+        if (mExcludeSame)
+        	if (point == lookupPoint)
+            	continue;
+
         // check if it is within the radius distance       
    	    double distSqr = distanceSqr(point, lookupPoint);
         
@@ -764,6 +777,10 @@ void mNeighbourInfo::getNeighboursInRadius(const mNeighbourInfoStruct &myNI,
 	   	triplet myNode = *nearestNodesIter;
        
         MVector point(myNode.d[0],myNode.d[1],myNode.d[2]);
+        
+        if (mExcludeSame)
+        	if (point == lookupPoint)
+            	continue;
 
 	       // check if it is within the radius distance       
         double distSqr = distanceSqr(point, lookupPoint);

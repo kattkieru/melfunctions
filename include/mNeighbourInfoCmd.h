@@ -82,6 +82,8 @@ static const char*  COUNT_IN_RANGE_FLAG_LONG = "countInRange";
 static const char*  ALL_IN_RANGE_FLAG = "air";
 static const char*  ALL_IN_RANGE_FLAG_LONG = "allInRange";
 
+static const char*  EXCLUDE_SAME_FLAG = "xcs";
+static const char*  EXCLUDE_SAME_FLAG_LONG = "excludeSame";
 
 
 #define CMD_ACTION_CREATE 0
@@ -213,6 +215,7 @@ class mNeighbourInfo : public MPxCommand
 			short			mCreateAction;                       
 
             bool			mQueryPosition;
+            bool			mExcludeSame;            
 
             bool            mHelpFlagSet;
             MString			mNIObject;
