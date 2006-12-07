@@ -289,7 +289,97 @@ MStatus mVecMult::doIt( const MArgList& args )
 	return MS::kSuccess;
 }
 
+/*
+   Function: mVecDblAdd
 
+   Add a double to all components of a vector
+
+   Parameters:
+
+		$vecArrayA - the vector array
+		$dblArrayB - the double array
+
+   Returns:
+
+      the result as a float[]
+
+*/
+#define mel mVecDblAdd(float[] $vecArrayA, float[] $vecArrayB);
+#undef mel
+
+CREATOR(mVecDblAdd)
+MStatus mVecDblAdd::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA, dblB;
+    unsigned int incA, incB, count;
+	MStatus stat = getArgVecDbl(args, dblA, dblB, incA, incB, count);
+	ERROR_FAIL(stat);
+
+	// do the actual job
+	unsigned int iterA, iterB;
+	iterA = iterB = 0;
+
+
+	MDoubleArray result = createEmptyVecArray(count);
+
+	for (unsigned int i=0;i<count*ELEMENTS_VEC;i++)
+	{
+		result[i] = dblA[iterA] + dblB[iterB];
+
+		iterA += incA;
+		iterB += incB;
+	}
+
+	setResult(result);
+	return MS::kSuccess;
+}
+
+/*
+   Function: mVecDblSub
+
+   Subtract a double from all components of a vector
+
+   Parameters:
+
+		$vecArrayA - the vector array
+		$dblArrayB - the double array
+
+   Returns:
+
+      the result as a float[]
+
+*/
+#define mel mVecDblSub(float[] $vecArrayA, float[] $vecArrayB);
+#undef mel
+
+CREATOR(mVecDblSub)
+MStatus mVecDblSub::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA, dblB;
+    unsigned int incA, incB, count;
+	MStatus stat = getArgVecDbl(args, dblA, dblB, incA, incB, count);
+	ERROR_FAIL(stat);
+
+	// do the actual job
+	unsigned int iterA, iterB;
+	iterA = iterB = 0;
+
+
+	MDoubleArray result = createEmptyVecArray(count);
+
+	for (unsigned int i=0;i<count*ELEMENTS_VEC;i++)
+	{
+		result[i] = dblA[iterA] - dblB[iterB];
+
+		iterA += incA;
+		iterB += incB;
+	}
+
+	setResult(result);
+	return MS::kSuccess;
+}
 /*
    Function: mVecDblMult
 

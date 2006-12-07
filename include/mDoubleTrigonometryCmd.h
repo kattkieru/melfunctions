@@ -10,8 +10,8 @@
  * OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef _mNoiseCmd_h_
-#define _mNoiseCmd_h_
+#ifndef _mDoubleTrigonometryCmd_h_
+#define _mDoubleTrigonometryCmd_h_
 
 #include "mHelperMacros.h"
 
@@ -20,25 +20,20 @@ namespace melfunctions
 {
 // wrapped in a macro, check out "helperMacros.h"
 
+DECLARE_COMMAND(mDblDegToRad)
+DECLARE_COMMAND(mDblRadToDeg)
 
-DECLARE_COMMAND(mSeed)
-DECLARE_COMMAND(mDblRand)
-DECLARE_COMMAND(mDblGauss)
+DECLARE_COMMAND(mDblSin)
+DECLARE_COMMAND(mDblCos)
+DECLARE_COMMAND(mDblTan)
 
-DECLARE_COMMAND(mDblSignedToUnsigned)
+DECLARE_COMMAND(mDblASin)
+DECLARE_COMMAND(mDblACos)
+DECLARE_COMMAND(mDblATan)
 
-DECLARE_COMMAND(mDbl1dNoise)
-DECLARE_COMMAND(mDbl2dNoise)
-DECLARE_COMMAND(mDbl3dNoise)
-DECLARE_COMMAND(mDbl4dNoise)
-
-DECLARE_COMMAND(mVec3dNoise)
-
-DECLARE_COMMAND(mDbl3dTurbulence)
-DECLARE_COMMAND(mVec3dTurbulence)
-
-
+DECLARE_COMMAND(mDblHSin)
+DECLARE_COMMAND(mDblHCos)
+DECLARE_COMMAND(mDblHTan)
 
 }//end namespace
 #endif
-

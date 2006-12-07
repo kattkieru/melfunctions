@@ -282,11 +282,53 @@ MStatus mDblGauss::doIt( const MArgList& args )
 	}
 }
 
+
 //************************************************************************************************//
 /*
-   Function: mDbl1dNoise
+   Function: mDblSignedToUnsigned
 
-   Create Improved Perlin noise for single values in an array
+   Convert a signed (noise) value ([-1 to 1]) into an unsigned one [0 to 1], no checking is done if the values are in the valid range to begin with!
+
+   Parameters:
+
+		$dblArrayA - the double array
+
+   Returns:
+
+       result as a float[]
+
+*/
+
+#define mel mDblSignedToUnsigned(float[] $dblArrayA);
+#undef mel
+
+CREATOR(mDblSignedToUnsigned)
+MStatus mDblSignedToUnsigned::doIt( const MArgList& args )
+{
+	// get the arguments
+    MDoubleArray dblA;
+    unsigned int count;
+	MStatus stat = getArgDbl(args, dblA, count);
+	ERROR_FAIL(stat);
+    
+    
+	// do the actual job
+
+	for (unsigned int i=0;i<dblA.length();i++)
+	{
+        dblA[i] = (0.5 * dblA[i] + 0.5);
+	}
+
+	setResult(dblA);
+	return MS::kSuccess;
+}
+
+
+//************************************************************************************************//
+/*
+   Function: mDbl1dNoise 
+
+   Create Improved Perlin noise for single values in an array [-1 to 1]
 
    Parameters:
 
@@ -314,7 +356,7 @@ MStatus mDbl1dNoise::doIt( const MArgList& args )
     
 	for (unsigned int i=0;i<dblA.length();i++)
 	{
-        dblA[i] = noiseGen.improvedPerlin1dU(float(dblA[i]));
+        dblA[i] = noiseGen.improvedPerlin1dS(float(dblA[i]));
 	}
 
 	setResult(dblA);
@@ -325,7 +367,7 @@ MStatus mDbl1dNoise::doIt( const MArgList& args )
 /*
    Function: mDbl2dNoise
 
-   Create Improved Perlin noise in 2 dimensions
+   Create Improved Perlin noise in 2 dimensions [-1 to 1]
 
    Parameters:
 
@@ -362,7 +404,7 @@ MStatus mDbl2dNoise::doIt( const MArgList& args )
 
         Noise noiseGen;
         for(int i=0;i<count;i++)
-	    	result[i] = noiseGen.improvedPerlin2dU(float(dblA[i*ELEMENTS_UV]), float(dblA[i*ELEMENTS_UV+1]));
+	    	result[i] = noiseGen.improvedPerlin2dS(float(dblA[i*ELEMENTS_UV]), float(dblA[i*ELEMENTS_UV+1]));
             
         setResult(result);
         
@@ -384,7 +426,7 @@ MStatus mDbl2dNoise::doIt( const MArgList& args )
 
 		for (unsigned int i=0;i<count;i++)
 		{
-        	result[i] = noiseGen.improvedPerlin2dU(float(dblA[iterA]), float(dblB[iterB]));
+        	result[i] = noiseGen.improvedPerlin2dS(float(dblA[iterA]), float(dblB[iterB]));
 
 			iterA += incA;
 			iterB += incB;
@@ -405,7 +447,7 @@ MStatus mDbl2dNoise::doIt( const MArgList& args )
 /*
    Function: mDbl3dNoise
 
-   Create Improved Perlin noise in 3 dimensions
+   Create Improved Perlin noise in 3 dimensions [-1 to 1]
 
    Parameters:
 
@@ -446,7 +488,7 @@ MStatus mDbl3dNoise::doIt( const MArgList& args )
         for(int i=0;i<count;i++)
         {
         	int id = ELEMENTS_VEC *i;
-	    	result[i] = noiseGen.improvedPerlin3dU(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]));
+	    	result[i] = noiseGen.improvedPerlin3dS(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]));
         }
             
         setResult(result);
@@ -469,7 +511,7 @@ MStatus mDbl3dNoise::doIt( const MArgList& args )
 
 		for (unsigned int i=0;i<count;i++)
 		{
-        	result[i] = noiseGen.improvedPerlin3dU(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]));
+        	result[i] = noiseGen.improvedPerlin3dS(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]));
 
 			iterA += incA;
 			iterB += incB;
@@ -491,7 +533,7 @@ MStatus mDbl3dNoise::doIt( const MArgList& args )
 /*
    Function: mDbl4dNoise
 
-   Create Improved Perlin noise in 4 dimensions
+   Create Improved Perlin noise in 4 dimensions [-1 to 1]
 
    Parameters:
 
@@ -534,7 +576,7 @@ MStatus mDbl4dNoise::doIt( const MArgList& args )
         for(int i=0;i<count;i++)
         {
         	int id = ELEMENTS_VEC *iterA;
-	    	result[i] = noiseGen.improvedPerlin4dU(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]),float(dblD[iterD]));
+	    	result[i] = noiseGen.improvedPerlin4dS(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]),float(dblD[iterD]));
             
             iterD += incD;
             iterA += incA;
@@ -560,7 +602,7 @@ MStatus mDbl4dNoise::doIt( const MArgList& args )
 
 		for (unsigned int i=0;i<count;i++)
 		{
-        	result[i] = noiseGen.improvedPerlin4dU(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]),  float(dblD[iterD]));
+        	result[i] = noiseGen.improvedPerlin4dS(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]),  float(dblD[iterD]));
 
 			iterA += incA;
 			iterB += incB;
@@ -677,4 +719,209 @@ MStatus mVec3dNoise::doIt( const MArgList& args )
 
 }
 
+
+
+//************************************************************************************************//
+/*
+   Function: mDbl3dTurbulence
+
+   Create turbulence based on Improved Perlin noise in 3 dimensions [-1 to 1]
+
+   Parameters:
+
+
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        $dblArrayC - the double array with sample values for dimension 3
+
+        $dblArrayO - the double array with the number of octaves (will be truncated to int)
+                
+        OR - .
+        
+        $vecArray - single vector array with the sample values
+        $dblArrayO - the double array with the number of octaves (will be truncated to int)        
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mDbl3dTurbulence(float[] $dblArrayA,float[] $dblArrayB,float[] $dblArrayC,float[] $dblArrayO);
+#undef mel
+
+CREATOR(mDbl3dTurbulence)
+MStatus mDbl3dTurbulence::doIt( const MArgList& args )
+{
+	if (args.length() == 2)
+	{
+    	// vector array
+		// get the arguments
+	    MDoubleArray dblA, dblB;
+    	unsigned int incA, incB, count;
+		MStatus stat = getArgVecDbl(args, dblA, dblB, incA, incB, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB;
+		iterA = iterB = 0;
+
+		MDoubleArray result(count);
+		Noise noiseGen;
+
+        for(int i=0;i<count;i++)
+        {
+        	int id = ELEMENTS_VEC *iterA;
+	    	result[i] = noiseGen.turbulence3dS(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]),int(dblB[iterB]),false,NOISE_IMPROVED_PERLIN);
+
+            iterA += incA;
+            iterB += incB;            
+        }
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 4)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB, dblC,dblD;
+    	unsigned int incA, incB, incC, incD, count;
+		MStatus stat = getArgDblDblDblDbl(args, dblA, dblB, dblC,dblD, incA, incB, incC, incD,count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB, iterC,iterD;
+		iterA = iterB = iterC =iterD = 0;
+
+		MDoubleArray result(count);
+		Noise noiseGen;
+
+		for (unsigned int i=0;i<count;i++)
+		{
+        	result[i] = noiseGen.turbulence3dS(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]), int(dblD[iterD]),false,NOISE_IMPROVED_PERLIN);
+
+			iterA += incA;
+			iterB += incB;
+			iterC += incC;            
+			iterD += incD;                        
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mDbl3dTurbulence: wrong number of arguments, should be 1 vecArray + 1 dblArray or 4 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
+
+//************************************************************************************************//
+/*
+   Function: mVec3dTurbulence
+
+   Create turbulence vector based on Improved Perlin noise in 3 dimensions
+
+   Parameters:
+
+
+		$dblArrayA - the double array with sample values for dimension 1
+        $dblArrayB - the double array with sample values for dimension 2
+        $dblArrayC - the double array with sample values for dimension 3
+
+        $dblArrayO - the double array with the number of octaves (will be truncated to int)
+                
+        OR - .
+        
+        $vecArray - single vector array with the sample values
+        $dblArrayO - the double array with the number of octaves (will be truncated to int)        
+
+   Returns:
+
+		noise values as a float[]
+
+*/
+#define mel mVec3dTurbulence(float[] $dblArrayA,float[] $dblArrayB,float[] $dblArrayC,float[] $dblArrayO);
+#undef mel
+
+CREATOR(mVec3dTurbulence)
+MStatus mVec3dTurbulence::doIt( const MArgList& args )
+{
+	if (args.length() == 2)
+	{
+    	// vector array
+		// get the arguments
+	    MDoubleArray dblA, dblB;
+    	unsigned int incA, incB, count;
+		MStatus stat = getArgVecDbl(args, dblA, dblB, incA, incB, count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB;
+		iterA = iterB = 0;
+
+		MDoubleArray result(count*ELEMENTS_VEC);
+		Noise noiseGen;
+        float v[3];
+
+        for(int i=0;i<count;i++)
+        {
+            int id = ELEMENTS_VEC *iterA;           
+	    	noiseGen.turbulenceVector(float(dblA[id]), float(dblA[id+1]),float(dblA[id+2]),int(dblB[iterB]),false,NOISE_IMPROVED_PERLIN,v);
+ 
+ 			int rid = ELEMENTS_VEC * i;
+            result[rid] = v[0];
+			result[rid+1] = v[1];
+			result[rid+2] = v[2]; 
+
+            iterA += incA;
+            iterB += incB;            
+                       
+        }
+            
+        setResult(result);
+        
+	}
+	else if (args.length() == 4)
+	{
+		// get the arguments
+	    MDoubleArray dblA, dblB, dblC,dblD;
+    	unsigned int incA, incB, incC, incD, count;
+		MStatus stat = getArgDblDblDblDbl(args, dblA, dblB, dblC,dblD, incA, incB, incC, incD,count);
+		ERROR_FAIL(stat);
+	
+		// do the actual job
+		unsigned int iterA, iterB, iterC,iterD;
+		iterA = iterB = iterC =iterD = 0;
+
+		MDoubleArray result(count*ELEMENTS_VEC);
+		Noise noiseGen;
+        float v[3];
+        
+		for (unsigned int i=0;i<count;i++)
+		{
+        	noiseGen.turbulenceVector(float(dblA[iterA]), float(dblB[iterB]),  float(dblC[iterC]), int(dblD[iterD]),false,NOISE_IMPROVED_PERLIN,v);
+
+            int id = ELEMENTS_VEC *i;           
+            
+            result[id] = v[0];
+			result[id+1] = v[1];
+			result[id+2] = v[2]; 
+
+			iterA += incA;
+			iterB += incB;
+			iterC += incC;            
+			iterD += incD;                        
+		}
+		
+        setResult(result);
+	}
+	else
+	{
+		USER_ERROR_CHECK(MS::kFailure,("mVec3dTurbulence: wrong number of arguments, should be 1 vecArray + 1 dblArray or 4 dblArrays!"));
+	}
+    
+	return MS::kSuccess;
+
+}
 }// namespace

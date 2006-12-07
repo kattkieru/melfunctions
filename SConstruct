@@ -17,13 +17,17 @@ mayaplugin_cpppath = [ '#/include', os.path.join( maya_location, 'include' ), '/
 
 mayaplugin_cppsrcs = [  'src/plugin.cpp', 
                         
-                        'src/mMatrixCmd.cpp', 
+                        'src/mMatrixManagementCmd.cpp', 
+                        'src/mMatrixMathCmd.cpp',                         
                         
                         'src/mVectorManagementCmd.cpp', 
                         'src/mVectorMathCmd.cpp',                         
                         
-                        'src/mDoubleCmd.cpp',     
-                                                
+                        'src/mDoubleManagementCmd.cpp',     
+                        'src/mDoubleAlgebraCmd.cpp',     
+                        'src/mDoubleTrigonometryCmd.cpp',                                                     
+                        'src/mDoubleLogicCmd.cpp',                                                     
+                                                                        
                         'src/mUVManagementCmd.cpp',     
                         
                         'src/Noise.cpp',     

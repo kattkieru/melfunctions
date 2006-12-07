@@ -23,8 +23,8 @@
 // - have a small control script which a) loads the plugin and then b) sources your actual script prior to executing it
 //
 // Version History:
+// - *0.7*, 07/12/06, added 2 turbulence functions to the noise set, conversion from signed to unsigned noise values, boolean logic functions and component wise addition of vectors and doubles, reorganized the docs
 // - *0.6*, 30/11/06, added 5 new noise functions and a way of creating a vectorArray from its components
-
 // - *0.5*, 28/11/06, added mAnimCurveInfo, added FieldOfView lookup support to mNeighbourInfo
 // - *0.4*, 22/11/06, random functions, sampling of 2d shader, information about instancer, get and set array attributes etc.
 // - *0.3*, 10/11/06, added basic uv array support, various bugfixes, more dbl and vec functions, nearest neighbour lookup and mesh vertex informations

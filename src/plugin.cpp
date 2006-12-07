@@ -19,12 +19,17 @@
 
 #include "../include/mHelperMacros.h"
 
-#include "../include/mMatrixCmd.h"
+#include "../include/mMatrixManagementCmd.h"
+#include "../include/mMatrixMathCmd.h"
 
 #include "../include/mVectorManagementCmd.h"
 #include "../include/mVectorMathCmd.h"
 
-#include "../include/mDoubleCmd.h"
+#include "../include/mDoubleManagementCmd.h"
+#include "../include/mDoubleAlgebraCmd.h"
+#include "../include/mDoubleTrigonometryCmd.h"
+#include "../include/mDoubleLogicCmd.h"
+
 
 #include "../include/mUVManagementCmd.h"
 
@@ -114,6 +119,8 @@ MStatus initializePlugin( MObject obj )
 	// vector math    
 	REGISTER_COMMAND(melfunctions,mVecAdd)
 	REGISTER_COMMAND(melfunctions,mVecSub)
+	REGISTER_COMMAND(melfunctions,mVecDblAdd)
+	REGISTER_COMMAND(melfunctions,mVecDblSub)
 	REGISTER_COMMAND(melfunctions,mVecDblMult)
 	REGISTER_COMMAND(melfunctions,mVecDblDiv)
 	REGISTER_COMMAND(melfunctions,mVecNegate)    
@@ -172,6 +179,14 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mDblIsEqual)
 	REGISTER_COMMAND(melfunctions,mDblIsNotEqual)
 	REGISTER_COMMAND(melfunctions,mDblIsEquivalent)
+	REGISTER_COMMAND(melfunctions,mDblIsBigger)
+	REGISTER_COMMAND(melfunctions,mDblIsSmaller)
+
+	REGISTER_COMMAND(melfunctions,mDblNot)
+	REGISTER_COMMAND(melfunctions,mDblAnd)
+	REGISTER_COMMAND(melfunctions,mDblOr)
+	REGISTER_COMMAND(melfunctions,mDblXOr)
+    
 
 	REGISTER_COMMAND(melfunctions,mDblMin)
 	REGISTER_COMMAND(melfunctions,mDblMax)
@@ -218,12 +233,15 @@ MStatus initializePlugin( MObject obj )
 	REGISTER_COMMAND(melfunctions,mSeed)    
 	REGISTER_COMMAND(melfunctions,mDblRand)
 	REGISTER_COMMAND(melfunctions,mDblGauss)  
+	REGISTER_COMMAND(melfunctions,mDblSignedToUnsigned)        
     REGISTER_COMMAND(melfunctions,mDbl1dNoise ) 
     REGISTER_COMMAND(melfunctions,mDbl2dNoise ) 
     REGISTER_COMMAND(melfunctions,mDbl3dNoise )         
     REGISTER_COMMAND(melfunctions,mDbl4dNoise )             
-    REGISTER_COMMAND(melfunctions,mVec3dNoise )                 
-    
+    REGISTER_COMMAND(melfunctions,mVec3dNoise )      
+ 	REGISTER_COMMAND(melfunctions,mDbl3dTurbulence)                 
+ 	REGISTER_COMMAND(melfunctions,mVec3dTurbulence)  
+          
    	// attributes
     REGISTER_COMMAND(melfunctions,mDblSetAttr)    
     REGISTER_COMMAND(melfunctions,mVecSetAttr)    
@@ -310,6 +328,8 @@ MStatus uninitializePlugin( MObject obj )
 	// vector math    
 	DEREGISTER_COMMAND(mVecAdd)
 	DEREGISTER_COMMAND(mVecSub)
+	DEREGISTER_COMMAND(mVecDblAdd)
+	DEREGISTER_COMMAND(mVecDblSub)
 	DEREGISTER_COMMAND(mVecDblMult)
 	DEREGISTER_COMMAND(mVecDblDiv)
 	DEREGISTER_COMMAND(mVecNegate)    
@@ -368,6 +388,14 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mDblIsEqual)
 	DEREGISTER_COMMAND(mDblIsNotEqual)
 	DEREGISTER_COMMAND(mDblIsEquivalent)
+	DEREGISTER_COMMAND(mDblIsBigger)
+	DEREGISTER_COMMAND(mDblIsSmaller)
+
+	DEREGISTER_COMMAND(mDblNot)
+	DEREGISTER_COMMAND(mDblAnd)
+	DEREGISTER_COMMAND(mDblOr)
+	DEREGISTER_COMMAND(mDblXOr)
+    
 
 	DEREGISTER_COMMAND(mDblMin)
 	DEREGISTER_COMMAND(mDblMax)
@@ -414,12 +442,14 @@ MStatus uninitializePlugin( MObject obj )
 	DEREGISTER_COMMAND(mSeed)    
 	DEREGISTER_COMMAND(mDblRand)
 	DEREGISTER_COMMAND(mDblGauss)        
+	DEREGISTER_COMMAND(mDblSignedToUnsigned)    
     DEREGISTER_COMMAND(mDbl1dNoise )
     DEREGISTER_COMMAND(mDbl2dNoise )
 	DEREGISTER_COMMAND(mDbl3dNoise )
  	DEREGISTER_COMMAND(mDbl4dNoise )      
-          
  	DEREGISTER_COMMAND(mVec3dNoise )                
+ 	DEREGISTER_COMMAND(mDbl3dTurbulence)
+ 	DEREGISTER_COMMAND(mVec3dTurbulence)    
     
 	// attributes
     DEREGISTER_COMMAND(mDblSetAttr)    

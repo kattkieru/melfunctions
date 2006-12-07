@@ -1,7 +1,7 @@
 Format: 1.35
 
 
-Title: melfunctions 0.6
+Title: melfunctions 0.7
 
 # You can also add a sub-title to your menu like this:
 # SubTitle: [subtitle]
@@ -34,7 +34,10 @@ File: Usage  (usage.cpp)
 
 Group: Double Arrays  {
 
-   File: Management & Math  (no auto-title, mDoubleCmd.cpp)
+   File: Management  (no auto-title, mDoubleManagementCmd.cpp)
+   File: Algebra  (no auto-title, mDoubleAlgebraCmd.cpp)
+   File: Trigonometry  (no auto-title, mDoubleTrigonometryCmd.cpp)
+   File: Logic  (no auto-title, mDoubleLogicCmd.cpp)
    }  # Group: Double Arrays
 
 Group: UV Arrays  {
@@ -50,7 +53,8 @@ Group: Vector Arrays  {
 
 Group: Matrix Arrays  {
 
-   File: Management & Math  (no auto-title, mMatrixCmd.cpp)
+   File: Management  (no auto-title, mMatrixManagementCmd.cpp)
+   File: Math  (no auto-title, mMatrixMathCmd.cpp)
    }  # Group: Matrix Arrays
 
 Group: Noise & Random  {

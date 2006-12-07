@@ -10,35 +10,24 @@
  * OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef _mNoiseCmd_h_
-#define _mNoiseCmd_h_
+#ifndef _mMatrixManagementCmd_h_
+#define _mMatrixManagementCmd_h_
 
 #include "mHelperMacros.h"
 
 
 namespace melfunctions
 {
+// declare the various matrix cmd classes
 // wrapped in a macro, check out "helperMacros.h"
 
-
-DECLARE_COMMAND(mSeed)
-DECLARE_COMMAND(mDblRand)
-DECLARE_COMMAND(mDblGauss)
-
-DECLARE_COMMAND(mDblSignedToUnsigned)
-
-DECLARE_COMMAND(mDbl1dNoise)
-DECLARE_COMMAND(mDbl2dNoise)
-DECLARE_COMMAND(mDbl3dNoise)
-DECLARE_COMMAND(mDbl4dNoise)
-
-DECLARE_COMMAND(mVec3dNoise)
-
-DECLARE_COMMAND(mDbl3dTurbulence)
-DECLARE_COMMAND(mVec3dTurbulence)
-
-
+DECLARE_COMMAND(mMatCreate)
+DECLARE_COMMAND(mMatSize)
+DECLARE_COMMAND(mMatAppend)
+DECLARE_COMMAND(mMatGet)
+DECLARE_COMMAND(mMatSet)
+DECLARE_COMMAND(mMatGetComponent)
+DECLARE_COMMAND(mMatSetComponent)
 
 }//end namespace
 #endif
-

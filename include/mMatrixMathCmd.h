@@ -10,8 +10,8 @@
  * OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef _mMatrixCmd_h_
-#define _mMatrixCmd_h_
+#ifndef _mMatrixMathCmd_h_
+#define _mMatrixMathCmd_h_
 
 #include "mHelperMacros.h"
 
@@ -20,12 +20,6 @@ namespace melfunctions
 {
 // declare the various matrix cmd classes
 // wrapped in a macro, check out "helperMacros.h"
-
-DECLARE_COMMAND(mMatCreate)
-DECLARE_COMMAND(mMatSize)
-DECLARE_COMMAND(mMatAppend)
-DECLARE_COMMAND(mMatGet)
-DECLARE_COMMAND(mMatSet)
 
 DECLARE_COMMAND(mMatAdd)
 DECLARE_COMMAND(mMatSub)
@@ -41,8 +35,6 @@ DECLARE_COMMAND(mMatHomogenize)
 DECLARE_COMMAND(mMatAdjoint)
 DECLARE_COMMAND(mMatDet4x4)
 DECLARE_COMMAND(mMatDet3x3)
-DECLARE_COMMAND(mMatGetComponent)
-DECLARE_COMMAND(mMatSetComponent)
 /*
 DECLARE_COMMAND(mMatGetRow)
 DECLARE_COMMAND(mMatSetRow)

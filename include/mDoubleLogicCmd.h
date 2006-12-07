@@ -10,8 +10,8 @@
  * OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef _mNoiseCmd_h_
-#define _mNoiseCmd_h_
+#ifndef _mDoubleLogicCmd_h_
+#define _mDoubleLogicCmd_h_
 
 #include "mHelperMacros.h"
 
@@ -20,25 +20,18 @@ namespace melfunctions
 {
 // wrapped in a macro, check out "helperMacros.h"
 
+DECLARE_COMMAND(mDblIsEqual)
+DECLARE_COMMAND(mDblIsNotEqual)
+DECLARE_COMMAND(mDblIsEquivalent)
 
-DECLARE_COMMAND(mSeed)
-DECLARE_COMMAND(mDblRand)
-DECLARE_COMMAND(mDblGauss)
+DECLARE_COMMAND(mDblIsBigger)
+DECLARE_COMMAND(mDblIsSmaller)
 
-DECLARE_COMMAND(mDblSignedToUnsigned)
-
-DECLARE_COMMAND(mDbl1dNoise)
-DECLARE_COMMAND(mDbl2dNoise)
-DECLARE_COMMAND(mDbl3dNoise)
-DECLARE_COMMAND(mDbl4dNoise)
-
-DECLARE_COMMAND(mVec3dNoise)
-
-DECLARE_COMMAND(mDbl3dTurbulence)
-DECLARE_COMMAND(mVec3dTurbulence)
-
+DECLARE_COMMAND(mDblNot)
+DECLARE_COMMAND(mDblAnd)
+DECLARE_COMMAND(mDblOr)
+DECLARE_COMMAND(mDblXOr)
 
 
 }//end namespace
 #endif
-
