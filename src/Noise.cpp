@@ -273,9 +273,9 @@ void Noise::noiseVector( float x, float y, float z, int nb, float v[3] )
     noisefunc = getNoiseFunctionPtrS(nb);
 
 	/* Simply evaluate noise at 3 different positions */
-	v[0] = (float)(2.0 * (*this.*noisefunc)(x + 9.321f, y - 1.531f,  z - 7.951f) - 1.0);
-	v[1] = (float)(2.0 * (*this.*noisefunc)(x,          y,           z        ) - 1.0);
-	v[2] = (float)(2.0 * (*this.*noisefunc)(x + 6.327f, y + 0.1671f, z - 2.672f) - 1.0);
+	v[0] = (float)( (*this.*noisefunc)(x + 9.321f, y - 1.531f,  z - 7.951f));
+	v[1] = (float)( (*this.*noisefunc)(x,          y,           z        ) );
+	v[2] = (float)( (*this.*noisefunc)(x + 6.327f, y + 0.1671f, z - 2.672f));
 }
 
 //************************************************************************************************
