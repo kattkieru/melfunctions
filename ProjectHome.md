@@ -1,0 +1,5 @@
+mal.. mael... -wait- melfunctions is a plugin for Alias Maya that gives you access to about 150 new mel command functions most of which are only very hard to replicate purely in MEL. A lot of the commands are actually convenient wrapper around functionality that is already in the Maya API and melfunctions gives the script writer access to this hidden power formerly only available to C++ developers.
+Hopefully it will make it easier and faster to create more advanced solutions using Maya’s embedded scripting language.
+Also included are a set of scriptable nodes (at the moment that's only one scriptable deformer, but other node types will follow), allowing you to use mel to control aspects of Maya that formerly only C++ developers had access to.
+
+Note: With the release of Maya 8.5 and its integration of Python you won't need many of these commands any more. Python together with its Maya API module is a much cleaner way of dealing with array data. However if you don't like Python and still want a bit more high-level control using mel, then this plugin might be just what you need.
